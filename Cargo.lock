@@ -1114,7 +1114,6 @@ dependencies = [
  "base64",
  "chrono",
  "dotenv",
- "futures",
  "http-types",
  "reqwest",
  "reqwest-middleware",

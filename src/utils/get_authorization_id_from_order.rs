@@ -1,31 +1,32 @@
 use crate::Order;
 
-/// Parses the `authorization_id` from an order.
-/// **Note**: The order has to be authorized before attempting to parse the `authorization_id`.
-///
-/// # Arguments
-/// * `order` - The order to parse the `authorization_id` from.
-/// * `purchase_unit_index` - The index of the purchase unit to parse the `authorization_id` from.
-/// * `authorization_index` - The index of the authorization to parse the `authorization_id` from.
-///
-/// # Returns
-/// Returns the `authorization_id` if it was found, otherwise `None`.
-pub fn get_authorization_id_from_order(
-    order: &Order,
-    purchase_unit_index: usize,
-    authorization_index: usize,
-) -> Option<String> {
-    order
-        .purchase_units
-        .as_ref()?
-        .get(purchase_unit_index)?
-        .payments
-        .as_ref()?
-        .authorizations
-        .as_ref()?
-        .get(authorization_index)?
-        .id
-        .clone()
+impl Order {
+    /// Parses the `authorization_id` from an order.
+    /// **Note**: The order has to be authorized before attempting to parse the `authorization_id`.
+    ///
+    /// # Arguments
+    /// * `order` - The order to parse the `authorization_id` from.
+    /// * `purchase_unit_index` - The index of the purchase unit to parse the `authorization_id` from.
+    /// * `authorization_index` - The index of the authorization to parse the `authorization_id` from.
+    ///
+    /// # Returns
+    /// Returns the `authorization_id` if it was found, otherwise `None`.
+    pub fn get_authorization_id(
+        &self,
+        purchase_unit_index: usize,
+        authorization_index: usize,
+    ) -> Option<String> {
+        self.purchase_units
+            .as_ref()?
+            .get(purchase_unit_index)?
+            .payments
+            .as_ref()?
+            .authorizations
+            .as_ref()?
+            .get(authorization_index)?
+            .id
+            .clone()
+    }
 }
 
 #[cfg(test)]
@@ -48,7 +49,7 @@ mod tests {
             ..Default::default()
         };
 
-        let authorization_id = get_authorization_id_from_order(&order, 0, 0).unwrap();
+        let authorization_id = order.get_authorization_id(0, 0).unwrap();
         assert_eq!(authorization_id, "AUTH-123");
     }
 }

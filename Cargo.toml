@@ -16,9 +16,7 @@ edition = "2021"
 name = "paypal_rust"
 
 [features]
-default = ["full"]
 utils = []
-full = ["utils"]
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"] }
@@ -32,7 +30,6 @@ http-types = "2.12.0"
 reqwest-middleware = "0.1.6"
 reqwest-retry = "0.1.5"
 chrono = { version = "0.4", features = ["serde"] }
-futures = "0.3.24"
 
 [dev-dependencies]
 tokio = { version = "1.21.2", features = ["full"] }
