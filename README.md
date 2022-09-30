@@ -26,8 +26,8 @@ use paypal_rust::{
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let username = std::env::var("CLIENT_ID")?;
-    let password = std::env::var("CLIENT_SECRET")?;
+    let username = std::env::var("CLIENT_ID").unwrap();
+    let password = std::env::var("CLIENT_SECRET").unwrap();
 
     let mut client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
         name: "PayPal Rust Test App".to_string(),
