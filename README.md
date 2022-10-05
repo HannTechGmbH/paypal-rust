@@ -61,7 +61,4 @@ async fn main() {
 # Features
 
 This library offers a "utils" feature that enables the `utils` module. This module contains
-some useful functions for working with the PayPal API. As of now:
-
-- `Order::get_maximum_reauthorization_amount()`
-- `Order::get_authorization_id()`
+some useful functions for working with the PayPal API.
