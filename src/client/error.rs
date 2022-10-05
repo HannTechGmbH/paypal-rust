@@ -2,25 +2,22 @@ use crate::resources::link_description::LinkDescription;
 use reqwest_middleware;
 use reqwest_middleware::Error;
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 use std::borrow::Cow;
-use std::error::Error as StdError;
 use std::fmt::Display;
+use thiserror::Error as ThisErr;
 
+#[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ErrorDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
     field: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     value: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     location: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     issue: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ThisErr)]
 pub struct ValidationError {
     pub name: String,
     pub message: String,
@@ -39,14 +36,12 @@ impl Display for ValidationError {
     }
 }
 
-impl StdError for ValidationError {}
-
 pub trait ErrorResponse {
     fn error(&self) -> Cow<str>;
     fn error_description(&self) -> Cow<str>;
 }
 
-#[derive(Debug)]
+#[derive(Debug, ThisErr)]
 pub enum PayPalError {
     Http(reqwest::Error),
     Json(serde_json::Error),

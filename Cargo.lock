@@ -1109,7 +1109,7 @@ dependencies = [
 
 [[package]]
 name = "paypal-rust"
-version = "0.0.1-alpha.1"
+version = "0.0.2-alpha.1"
 dependencies = [
  "base64",
  "chrono",
@@ -1123,6 +1123,7 @@ dependencies = [
  "serde_qs 0.10.1",
  "serde_urlencoded",
  "serde_with",
+ "thiserror",
  "tokio",
 ]
 
