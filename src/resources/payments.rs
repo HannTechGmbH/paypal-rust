@@ -28,9 +28,12 @@ impl Payment {
     /// request body. For a partial refund, include an amount object in the JSON request body.
     pub async fn refund_captured(
         client: &mut Client,
+        capture_id: String,
         dto: RefundCapturedPaymentDto,
     ) -> Result<RefundCapturedPaymentResponse, PayPalError> {
-        client.post(&RefundCapturedPayment::new(dto)).await
+        client
+            .post(&RefundCapturedPayment::new(capture_id, dto))
+            .await
     }
 
     /// Reauthorizes an authorized PayPal account payment, by ID. To ensure that funds are still
@@ -287,9 +290,9 @@ struct RefundCapturedPayment {
 }
 
 impl RefundCapturedPayment {
-    pub fn new(body: RefundCapturedPaymentDto) -> Self {
+    pub fn new(capture_id: String, body: RefundCapturedPaymentDto) -> Self {
         Self {
-            capture_id: String::new(),
+            capture_id,
             amount: body.amount,
             invoice_id: body.invoice_id,
             note_to_payer: body.note_to_payer,
