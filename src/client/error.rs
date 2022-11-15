@@ -10,11 +10,11 @@ use thiserror::Error as ThisErr;
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ErrorDetails {
-    field: Option<String>,
-    value: Option<String>,
-    location: Option<String>,
-    issue: Option<String>,
-    description: Option<String>,
+    pub field: Option<String>,
+    pub value: Option<String>,
+    pub location: Option<String>,
+    pub issue: Option<String>,
+    pub description: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ThisErr)]
