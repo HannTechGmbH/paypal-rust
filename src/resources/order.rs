@@ -95,6 +95,23 @@ impl Order {
             .post(&AuthorizePaymentForOrder::new(id.to_string()))
             .await
     }
+
+    /// Captures payment for an order. To successfully capture payment for an order,
+    /// the buyer must first approve the order or a valid payment_source must be provided in the
+    /// request. A buyer can approve the order upon being redirected to the rel:approve URL that
+    /// was returned in the HATEOAS links in the create order response.
+    pub async fn capture(
+        client: &mut Client,
+        id: &str,
+        payment_source: Option<PaymentSource>,
+    ) -> Result<CapturePaymentForOrderResponse, PayPalError> {
+        client
+            .post(&CapturePaymentForOrder {
+                order_id: id.to_string(),
+                payment_source,
+            })
+            .await
+    }
 }
 
 #[skip_serializing_none]
