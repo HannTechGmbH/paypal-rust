@@ -61,12 +61,12 @@ pub struct Order {
 
 impl Order {
     /// Creates an order.
-    pub async fn create(client: &mut Client, dto: CreateOrderDto) -> Result<Order, PayPalError> {
+    pub async fn create(client: &Client, dto: CreateOrderDto) -> Result<Order, PayPalError> {
         client.post(&CreateOrder::new(dto)).await
     }
 
     /// Shows details for an order, by ID.
-    pub async fn show_details(client: &mut Client, id: &str) -> Result<Order, PayPalError> {
+    pub async fn show_details(client: &Client, id: &str) -> Result<Order, PayPalError> {
         client.get(&ShowOrderDetails::new(id.to_string())).await
     }
 
@@ -75,11 +75,7 @@ impl Order {
     /// To make an update, you must provide a reference_id. If you omit this value with an order
     /// that contains only one purchase unit, PayPal sets the value to default which enables you to
     /// use the path: "/purchase_units/@reference_id=='default'/{attribute-or-object}"
-    pub async fn patch(
-        client: &mut Client,
-        id: &str,
-        dto: PatchOrderDto,
-    ) -> Result<(), PayPalError> {
+    pub async fn patch(client: &Client, id: &str, dto: PatchOrderDto) -> Result<(), PayPalError> {
         client.patch(&PatchOrder::new(id.to_string(), dto)).await
     }
 
@@ -88,7 +84,7 @@ impl Order {
     /// A buyer can approve the order upon being redirected to the rel:approve URL that was returned
     /// in the HATEOAS links in the create order response.
     pub async fn authorize_payment(
-        client: &mut Client,
+        client: &Client,
         id: &str,
     ) -> Result<AuthorizePaymentForOrderResponse, PayPalError> {
         client
@@ -101,7 +97,7 @@ impl Order {
     /// request. A buyer can approve the order upon being redirected to the rel:approve URL that
     /// was returned in the HATEOAS links in the create order response.
     pub async fn capture(
-        client: &mut Client,
+        client: &Client,
         id: &str,
         payment_source: Option<PaymentSource>,
     ) -> Result<CapturePaymentForOrderResponse, PayPalError> {
