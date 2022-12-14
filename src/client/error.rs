@@ -21,8 +21,8 @@ pub struct ErrorDetails {
 pub struct ValidationError {
     pub name: String,
     pub message: String,
-    pub debug_id: String,
-    pub details: Vec<ErrorDetails>,
+    pub debug_id: Option<String>,
+    pub details: Option<Vec<ErrorDetails>>,
     pub links: Vec<LinkDescription>,
 }
 
@@ -30,7 +30,7 @@ impl Display for ValidationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "ValidationError: {} - {} - {} - {:?}\n Links: {:?}",
+            "ValidationError: {} - {} - {:?} - {:?}\n Links: {:?}",
             self.name, self.message, self.debug_id, self.details, self.links
         )
     }
