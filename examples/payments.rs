@@ -21,7 +21,7 @@ async fn main() {
 
     // Create an order
     let order = Order::create(
-        &mut client,
+        &client,
         CreateOrderDto {
             intent: OrderIntent::Capture,
             payer: None,
@@ -45,7 +45,7 @@ async fn main() {
     tokio::time::sleep(tokio::time::Duration::from_secs(30)).await;
 
     // Authorize the order
-    let authorized = Order::authorize_payment(&mut client, &order.id.unwrap())
+    let authorized = Order::authorize_payment(&client, &order.id.unwrap())
         .await
         .expect("Failed to authorize order");
 
