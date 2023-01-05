@@ -20,7 +20,7 @@ pub struct Capture {
 
     /// The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions.
     /// Appears in transaction and settlement reports.
-    pub custom_id: String,
+    pub custom_id: Option<String>,
 
     /// The funds that are held on behalf of the merchant.
     pub disbursement_mode: Option<DisbursementMode>,
