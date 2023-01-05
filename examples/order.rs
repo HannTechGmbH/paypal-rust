@@ -4,6 +4,8 @@ use paypal_rust::{
     AmountWithBreakdown, Client, CreateOrderDto, CurrencyCode, Environment, Order,
     OrderApplicationContext, OrderIntent, PurchaseUnitRequest,
 };
+use std::thread::sleep;
+use std::time::Duration;
 
 #[tokio::main]
 async fn main() {
@@ -11,7 +13,7 @@ async fn main() {
     let username = std::env::var("CLIENT_ID").unwrap();
     let password = std::env::var("CLIENT_SECRET").unwrap();
 
-    let mut client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
+    let client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
         name: "PayPal Rust Test App".to_string(),
         version: "1.0".to_string(),
         website: None,
@@ -20,13 +22,13 @@ async fn main() {
     client.authenticate().await.unwrap();
 
     let new_order = Order::create(
-        &mut client,
+        &client,
         CreateOrderDto {
             intent: OrderIntent::Capture,
             payer: None,
             purchase_units: vec![PurchaseUnitRequest::new(AmountWithBreakdown::new(
                 CurrencyCode::Euro,
-                "100.00".to_string(),
+                "10.00".to_string(),
             ))],
             application_context: Some(
                 OrderApplicationContext::new()
@@ -38,5 +40,17 @@ async fn main() {
     .await
     .unwrap();
 
-    println!("{:?}", new_order);
+    println!(
+        "Approval URL: {:?}. Waiting 15 seconds before capturing",
+        new_order.links.unwrap().get(1).unwrap().href
+    );
+
+    sleep(Duration::from_secs(15));
+
+    let capture = Order::capture(&client, &new_order.id.unwrap(), None)
+        .await
+        .unwrap();
+
+    println!("Capture succeeded!");
+    println!("Capture: {:?}", capture);
 }

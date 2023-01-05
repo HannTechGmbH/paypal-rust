@@ -13,17 +13,17 @@ pub struct Capture {
     pub status: String,
 
     /// The details of the captured payment status.
-    pub status_details: CaptureStatusDetails,
+    pub status_details: Option<CaptureStatusDetails>,
 
     /// The amount for this captured payment.
     pub amount: Money,
 
     /// The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions.
     /// Appears in transaction and settlement reports.
-    pub custom_id: String,
+    pub custom_id: Option<String>,
 
     /// The funds that are held on behalf of the merchant.
-    pub disbursement_mode: DisbursementMode,
+    pub disbursement_mode: Option<DisbursementMode>,
 
     /// Indicates whether you can make additional captures against the authorized payment. Set to true if you do not intend to capture
     /// additional payments against the authorization. Set to false if you intend to capture additional payments against the authorization.
@@ -34,13 +34,13 @@ pub struct Capture {
 
     /// The API caller-provided external invoice number for this order. Appears in both the payer's transaction history and the
     /// emails that the payer receives.
-    pub invoice_id: String,
+    pub invoice_id: Option<String>,
 
     /// An array of related HATEOAS links.
     pub links: Vec<LinkDescription>,
 
     /// An object that provides additional processor information for a direct credit card transaction.
-    pub processor_response: ProcessorResponse,
+    pub processor_response: Option<ProcessorResponse>,
 
     /// The level of protection offered as defined by PayPal Seller Protection for Merchants.
     pub seller_protection: SellerProtection,

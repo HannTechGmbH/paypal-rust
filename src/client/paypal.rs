@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::client::request;
 
 use crate::client::app_info::AppInfo;
@@ -12,13 +14,14 @@ use reqwest_middleware;
 use reqwest_retry::policies::ExponentialBackoff;
 use reqwest_retry::RetryTransientMiddleware;
 use serde::{Deserialize, Serialize};
+use tokio::sync::RwLock;
 
 pub static USER_AGENT: &str = concat!("PayPal/v2 Rust Bindings/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Clone)]
 pub struct Client {
     pub default_headers: request::HttpRequestHeaders,
-    pub auth_data: AuthData,
+    pub auth_data: Arc<RwLock<AuthData>>,
     user_agent: String,
     client_secret: String,
     username: String,
@@ -46,7 +49,7 @@ impl Client {
             .unwrap(),
             http: reqwest::Client::new(),
             user_agent: USER_AGENT.into(),
-            auth_data: AuthData::default(),
+            auth_data: Arc::new(RwLock::new(AuthData::default())),
         }
     }
 
@@ -93,7 +96,7 @@ impl Client {
     ///
     /// # Returns
     /// The response body serialized into the provided type.
-    pub async fn get<T: Endpoint>(&mut self, endpoint: &T) -> Result<T::ResponseBody, PayPalError> {
+    pub async fn get<T: Endpoint>(&self, endpoint: &T) -> Result<T::ResponseBody, PayPalError> {
         let mut req = self.http.get(endpoint.request_url(self.environment));
         req = self.set_request_headers(req, &endpoint.headers());
 
@@ -108,10 +111,7 @@ impl Client {
     ///
     /// # Returns
     /// The response body serialized into the provided type.
-    pub async fn post<T: Endpoint>(
-        &mut self,
-        endpoint: &T,
-    ) -> Result<T::ResponseBody, PayPalError> {
+    pub async fn post<T: Endpoint>(&self, endpoint: &T) -> Result<T::ResponseBody, PayPalError> {
         let body = serde_json::to_string(&endpoint.request_body())?;
         let mut req = self.http.post(endpoint.request_url(self.environment));
 
@@ -128,7 +128,7 @@ impl Client {
     ///
     /// # Returns
     /// The response body serialized into the provided type.
-    pub async fn patch<T: Endpoint>(&mut self, endpoint: &T) -> Result<(), PayPalError> {
+    pub async fn patch<T: Endpoint>(&self, endpoint: &T) -> Result<(), PayPalError> {
         let body = serde_json::to_string(&endpoint.request_body())?;
         let mut req = self.http.patch(endpoint.request_url(self.environment));
 
@@ -151,13 +151,13 @@ impl Client {
     }
 
     async fn execute<T: Endpoint>(
-        &mut self,
+        &self,
         endpoint: &T,
         mut request: RequestBuilder,
     ) -> Result<T::ResponseBody, PayPalError> {
         match endpoint.auth_strategy() {
             AuthStrategy::TokenRefresh => {
-                if self.auth_data.about_to_expire() {
+                if self.auth_data.read().await.about_to_expire() {
                     self.authenticate().await?;
                 }
             }
@@ -166,7 +166,7 @@ impl Client {
 
         request = request.header(
             AUTHORIZATION,
-            format!("Bearer {}", self.auth_data.access_token),
+            format!("Bearer {}", self.auth_data.read().await.access_token),
         );
 
         let response = request.send().await.map_err(PayPalError::from)?;
@@ -198,7 +198,7 @@ impl Client {
         ))
     }
 
-    pub async fn authenticate(&mut self) -> Result<(), PayPalError> {
+    pub async fn authenticate(&self) -> Result<(), PayPalError> {
         let endpoint = Authenticate::new(get_basic_auth_for_user_service(
             self.username.as_str(),
             self.client_secret.as_str(),
@@ -231,7 +231,7 @@ impl Client {
             Ok(res) => {
                 let parsed_response = serde_json::from_str::<AuthResponse>(&res.text().await?)?;
 
-                self.auth_data.update(parsed_response);
+                self.auth_data.write().await.update(parsed_response);
                 Ok(())
             }
 
