@@ -51,11 +51,10 @@ pub trait Endpoint {
     /// The URL to send the request to. DO NOT OVERRIDE THIS METHOD.
     fn request_url(&self, environment: Environment) -> Url {
         let path = self.path();
-        if path.starts_with('/') {
-            panic!("Path must not start with a forward slash");
-        }
+        let path = path.strip_prefix('/').unwrap_or(&path);
 
         let mut request_url = match environment {
+            // Expects are fine here, as we can be sure that the URL is valid.
             Environment::Sandbox => RequestUrl::Sandbox.as_url().expect("Invalid URL"),
             Environment::Live => RequestUrl::Live.as_url().expect("Invalid URL"),
         };

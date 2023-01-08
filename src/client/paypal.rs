@@ -32,31 +32,37 @@ pub struct Client {
 
 impl Client {
     /// Initialize a new PayPal client. To authenticate, use the `authenticate` method.
-    pub fn new(username: String, client_secret: String, environment: Environment) -> Self {
+    pub fn new(
+        username: String,
+        client_secret: String,
+        environment: Environment,
+    ) -> Result<Self, PayPalError> {
         let authorization =
             get_basic_auth_for_user_service(username.as_str(), client_secret.as_str());
 
-        Client {
+        let base_url = match environment {
+            Environment::Sandbox => request::RequestUrl::Sandbox,
+            Environment::Live => request::RequestUrl::Live,
+        }
+        .as_url()
+        .map_err(|_e| PayPalError::LibraryError("Could not parse environment Url".to_string()))?;
+
+        Ok(Client {
             environment,
             client_secret,
             username,
             default_headers: request::HttpRequestHeaders::new(authorization),
-            base_url: match environment {
-                Environment::Sandbox => request::RequestUrl::Sandbox,
-                Environment::Live => request::RequestUrl::Live,
-            }
-            .as_url()
-            .unwrap(),
+            base_url,
             http: reqwest::Client::new(),
             user_agent: USER_AGENT.into(),
             auth_data: Arc::new(RwLock::new(AuthData::default())),
-        }
+        })
     }
 
     /// Composes an URL from the base URL and the provided path.
     ///
     /// # Arguments
-    ///  * `path` - The path to append to the base URL.
+    ///  * `request_path` - The path to append to the base URL.
     pub fn compose_url(&self, request_path: &str) -> Url {
         let mut url = self.base_url.clone();
         url.set_path(request_path);
@@ -66,8 +72,8 @@ impl Client {
     /// Composes an URL with query parameters.
     ///
     /// # Arguments
-    /// * `path` - The path to append to the base URL.
-    /// * `query_params` - The query parameters to append to the URL.
+    /// * `request_path` - The path to append to the base URL.
+    /// * `query` - The query parameters to append to the URL.
     pub fn compose_url_with_query(
         &self,
         request_path: &str,
@@ -92,7 +98,7 @@ impl Client {
     /// Performs a GET request.
     ///
     /// # Arguments
-    /// * `request` - The request object holding the final request parameters.
+    /// * `endpoint` - The endpoint to call.
     ///
     /// # Returns
     /// The response body serialized into the provided type.
@@ -107,7 +113,7 @@ impl Client {
 
     /// Performs a POST request.
     /// # Arguments
-    /// * `request` - The request object holding the final request parameters.
+    /// * `endpoint` - The endpoint to call.
     ///
     /// # Returns
     /// The response body serialized into the provided type.
@@ -124,7 +130,7 @@ impl Client {
     /// Performs a PATCH request.
     ///
     /// # Arguments
-    /// * `request` - The request object holding the final request parameters.
+    /// * `endpoint` - The endpoint to call.
     ///
     /// # Returns
     /// The response body serialized into the provided type.
@@ -138,6 +144,11 @@ impl Client {
         Ok(())
     }
 
+    /// Sets the request headers for a request.
+    ///
+    /// # Arguments
+    /// * `request_builder` - The request builder to set the headers on.
+    /// * `headers` - The headers to set.
     pub fn set_request_headers(
         &self,
         mut request_builder: RequestBuilder,
@@ -150,18 +161,20 @@ impl Client {
         request_builder
     }
 
+    /// Executes a request.
+    ///
+    /// # Arguments
+    /// * `endpoint` - The endpoint to call.
+    /// * `request` - The request to execute (builder).
     async fn execute<T: Endpoint>(
         &self,
         endpoint: &T,
         mut request: RequestBuilder,
     ) -> Result<T::ResponseBody, PayPalError> {
-        match endpoint.auth_strategy() {
-            AuthStrategy::TokenRefresh => {
-                if self.auth_data.read().await.about_to_expire() {
-                    self.authenticate().await?;
-                }
+        if let AuthStrategy::TokenRefresh = endpoint.auth_strategy() {
+            if self.auth_data.read().await.about_to_expire() {
+                self.authenticate().await?;
             }
-            AuthStrategy::NoTokenRefresh => {}
         }
 
         request = request.header(
@@ -171,31 +184,25 @@ impl Client {
 
         let response = request.send().await.map_err(PayPalError::from)?;
 
-        if response.status().is_success() {
-            let response = serde_json::from_str::<T::ResponseBody>(
-                &response.text().await.map_err(PayPalError::from)?,
-            );
-
-            return match response {
-                Ok(response) => Ok(response),
-                Err(error) => {
-                    // Endpoints that return an empty response body can safely be deserialized into
-                    // an empty struct.
-                    return if error.is_eof() {
-                        Ok(serde_json::from_str::<T::ResponseBody>("{}")?)
-                    } else {
-                        Err(PayPalError::from(error))
-                    };
-                }
-            };
+        if !response.status().is_success() {
+            return Err(PayPalError::from(
+                response
+                    .json::<ValidationError>()
+                    .await
+                    .map_err(PayPalError::from)?,
+            ));
         }
 
-        Err(PayPalError::from(
-            response
-                .json::<ValidationError>()
-                .await
-                .map_err(PayPalError::from)?,
-        ))
+        serde_json::from_str::<T::ResponseBody>(&response.text().await.map_err(PayPalError::from)?)
+            .or_else(|error| {
+                // Endpoints that return an empty response body can safely be deserialized intonto
+                // an empty struct.
+                if error.is_eof() {
+                    Ok(serde_json::from_str::<T::ResponseBody>("{}")?)
+                } else {
+                    Err(PayPalError::from(error))
+                }
+            })
     }
 
     pub async fn authenticate(&self) -> Result<(), PayPalError> {
@@ -292,7 +299,8 @@ mod tests {
             "username".to_string(),
             "password".to_string(),
             Environment::Sandbox,
-        );
+        )
+        .unwrap();
         let url = client.compose_url("test");
         assert_eq!(
             url,
@@ -303,7 +311,8 @@ mod tests {
             "username".to_string(),
             "password".to_string(),
             Environment::Live,
-        );
+        )
+        .unwrap();
         let url = client.compose_url("test");
         assert_eq!(url, Url::from_str("https://api-m.paypal.com/test").unwrap());
     }
@@ -314,7 +323,8 @@ mod tests {
             "username".to_string(),
             "password".to_string(),
             Environment::Sandbox,
-        );
+        )
+        .unwrap();
         let query: QueryParams = QueryParams::new()
             .page(1)
             .page_size(10)

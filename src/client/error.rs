@@ -48,6 +48,7 @@ pub enum PayPalError {
     Api(ValidationError),
     QueryString(serde_urlencoded::ser::Error),
     MissingAccessToken,
+    LibraryError(String),
 }
 
 impl Display for PayPalError {
@@ -58,6 +59,7 @@ impl Display for PayPalError {
             Self::Api(e) => write!(f, "API error: {}", e),
             Self::QueryString(e) => write!(f, "Failed to serialize query string: {}", e),
             Self::MissingAccessToken => write!(f, "Missing access token"),
+            Self::LibraryError(e) => write!(f, "Library error: {}", e),
         }
     }
 }
@@ -90,9 +92,10 @@ impl From<Error> for PayPalError {
     fn from(error: Error) -> Self {
         match error {
             Error::Reqwest(error) => Self::Http(error),
-            Error::Middleware(_) => {
-                panic!("Middleware error should not be returned from PayPal API, please report this issue")
-            }
+            Error::Middleware(_) => Self::LibraryError(
+                "Middleware error should not be returned from PayPal API, please report this issue"
+                    .to_string(),
+            ),
         }
     }
 }

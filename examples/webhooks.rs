@@ -8,11 +8,13 @@ async fn main() {
     let username = std::env::var("CLIENT_ID").unwrap();
     let password = std::env::var("CLIENT_SECRET").unwrap();
 
-    let client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
-        name: "PayPal Rust Test App".to_string(),
-        version: "1.0".to_string(),
-        website: None,
-    });
+    let client = Client::new(username, password, Environment::Sandbox)
+        .unwrap()
+        .with_app_info(AppInfo {
+            name: "PayPal Rust Test App".to_string(),
+            version: "1.0".to_string(),
+            website: None,
+        });
 
     client.authenticate().await.unwrap();
 

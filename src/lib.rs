@@ -27,11 +27,13 @@
 //!     let username = std::env::var("CLIENT_ID").expect("CLIENT_ID must be set");
 //!     let password = std::env::var("CLIENT_SECRET").expect("CLIENT_SECRET must be set");
 //!
-//!     let mut client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
-//!         name: "PayPal Rust Test App".to_string(),
-//!         version: "1.0".to_string(),
-//!         website: None,
-//!     });
+//!     let mut client = Client::new(username, password, Environment::Sandbox)
+//!         .unwrap()
+//!         .with_app_info(AppInfo {
+//!             name: "PayPal Rust Test App".to_string(),
+//!             version: "1.0".to_string(),
+//!             website: None,
+//!         });
 //!
 //!     client.authenticate().await.unwrap();
 //!
