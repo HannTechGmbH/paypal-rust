@@ -26,25 +26,27 @@ use paypal_rust::{
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    let username = std::env::var("CLIENT_ID").unwrap();
-    let password = std::env::var("CLIENT_SECRET").unwrap();
+    let username = std::env::var("CLIENT_ID").expect("CLIENT_ID must be set");
+    let password = std::env::var("CLIENT_SECRET").expect("CLIENT_SECRET must be set");
 
-    let mut client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
-        name: "PayPal Rust Test App".to_string(),
-        version: "1.0".to_string(),
-        website: None,
-    });
+    let mut client = Client::new(username, password, Environment::Sandbox)
+        .unwrap()
+        .with_app_info(AppInfo {
+            name: "PayPal Rust Test App".to_string(),
+            version: "1.0".to_string(),
+            website: None,
+        });
 
     client.authenticate().await.unwrap();
 
     let order = Order::create(
-        &mut client,
+        &client,
         CreateOrderDto {
             intent: OrderIntent::Capture,
             payer: None,
             purchase_units: vec![PurchaseUnitRequest::new(AmountWithBreakdown::new(
                 CurrencyCode::Euro,
-                "100.00".to_string(),
+                "10.00".to_string(),
             ))],
             application_context: Some(
                 OrderApplicationContext::new()
