@@ -36,13 +36,13 @@
 //!     client.authenticate().await.unwrap();
 //!
 //!     let order = Order::create(
-//!         &mut client,
+//!         &client,
 //!         CreateOrderDto {
 //!             intent: OrderIntent::Capture,
 //!             payer: None,
 //!             purchase_units: vec![PurchaseUnitRequest::new(AmountWithBreakdown::new(
 //!                 CurrencyCode::Euro,
-//!                 "100.00".to_string(),
+//!                 "10.00".to_string(),
 //!             ))],
 //!             application_context: Some(
 //!                 OrderApplicationContext::new()

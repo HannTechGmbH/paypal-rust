@@ -68,7 +68,7 @@ async fn main() {
 
     // Capture the payment
     let capture = Payment::capture_authorized(
-        &mut client,
+        &client,
         authorization_id,
         CaptureAuthorizedPaymentDto {
             invoice_id: None,

@@ -12,7 +12,7 @@ pub struct Webhook;
 impl Webhook {
     /// Verifies a webhook signature.
     pub async fn verify(
-        client: &mut Client,
+        client: &Client,
         dto: VerifyWebhookSignatureDto,
     ) -> Result<VerifyWebhookSignatureResponse, PayPalError> {
         client.post(&VerifyWebhookSignature::new(dto)).await

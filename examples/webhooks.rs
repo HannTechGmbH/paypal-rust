@@ -8,7 +8,7 @@ async fn main() {
     let username = std::env::var("CLIENT_ID").unwrap();
     let password = std::env::var("CLIENT_SECRET").unwrap();
 
-    let mut client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
+    let client = Client::new(username, password, Environment::Sandbox).with_app_info(AppInfo {
         name: "PayPal Rust Test App".to_string(),
         version: "1.0".to_string(),
         website: None,
@@ -16,7 +16,7 @@ async fn main() {
 
     client.authenticate().await.unwrap();
 
-    let verification_status = Webhook::verify(&mut client, VerifyWebhookSignatureDto {
+    let verification_status = Webhook::verify(&client, VerifyWebhookSignatureDto {
         auth_algo: "SHA256withRSA".to_string(),
         cert_url: "cert_url".to_string(),
         transmission_id: "69cd13f0-d67a-11e5-baa3-778b53f4ae55".to_string(),

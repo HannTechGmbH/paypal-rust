@@ -15,7 +15,7 @@ pub struct Payment;
 impl Payment {
     /// Captures an authorized payment, by ID.
     pub async fn capture_authorized(
-        client: &mut Client,
+        client: &Client,
         authorization_id: String,
         dto: CaptureAuthorizedPaymentDto,
     ) -> Result<CaptureAuthorizedPaymentResponse, PayPalError> {
@@ -27,7 +27,7 @@ impl Payment {
     /// Refunds a captured payment, by ID. For a full refund, include an empty payload in the JSON
     /// request body. For a partial refund, include an amount object in the JSON request body.
     pub async fn refund_captured(
-        client: &mut Client,
+        client: &Client,
         capture_id: String,
         dto: RefundCapturedPaymentDto,
     ) -> Result<RefundCapturedPaymentResponse, PayPalError> {
@@ -51,7 +51,7 @@ impl Payment {
     ///
     /// Supports only the amount request parameter.
     pub async fn reauthorize_authorized(
-        client: &mut Client,
+        client: &Client,
         authorization_id: String,
         dto: ReauthorizeAuthorizedPaymentDto,
     ) -> Result<ReauthorizeAuthorizedPaymentResponse, PayPalError> {
@@ -63,7 +63,7 @@ impl Payment {
     /// Voids, or cancels, an authorized payment, by ID. You cannot void an authorized payment that
     /// has been fully captured.
     pub async fn void_authorized(
-        client: &mut Client,
+        client: &Client,
         authorization_id: String,
     ) -> Result<(), PayPalError> {
         client
