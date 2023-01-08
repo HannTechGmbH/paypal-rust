@@ -28,12 +28,12 @@ mod tests {
                 LinkDescription {
                     href: "https://example.com".to_string(),
                     rel: "approve".to_string(),
-                    method: crate::resources::HttpMethod::Get,
+                    method: Some(crate::resources::HttpMethod::Get),
                 },
                 LinkDescription {
                     href: "https://example.com".to_string(),
                     rel: "other".to_string(),
-                    method: crate::resources::HttpMethod::Get,
+                    method: Some(crate::resources::HttpMethod::Get),
                 },
             ]),
             ..Default::default()
