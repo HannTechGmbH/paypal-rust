@@ -5,12 +5,12 @@
 [![Downloads](https://img.shields.io/crates/d/paypal-rust?style=for-the-badge)](https://crates.io/crates/paypal-rust)
 [![Version](https://img.shields.io/crates/v/paypal-rust?style=for-the-badge)](https://crates.io/crates/paypal-rust)
 
-Rust bindings for the PayPal [REST](https://developer.paypal.com/api/rest) API.
+Rust bindings for the [PayPal REST API](https://developer.paypal.com/api/rest).
 
 This library is a work in progress. While functional, it is not yet advised
 to be used in production (The API will change, tests are not yet complete, etc).
 
-For more information on the PayPal REST API, see the [PayPal Developer Portal](https://developer.paypal.com/api/rest).
+For more information on the PayPal REST API, visit the [PayPal Developer Portal](https://developer.paypal.com/api/rest).
 We aren't affiliated with PayPal in any way and this library is not endorsed by them.
 
 ## Usage
