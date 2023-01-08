@@ -36,7 +36,7 @@ impl Client {
         username: String,
         client_secret: String,
         environment: Environment,
-    ) -> Result<Self, PayPalError> {
+    ) -> Result<Self, Box<PayPalError>> {
         let authorization =
             get_basic_auth_for_user_service(username.as_str(), client_secret.as_str());
 

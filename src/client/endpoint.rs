@@ -59,7 +59,7 @@ pub trait Endpoint {
             Environment::Live => RequestUrl::Live.as_url().expect("Invalid URL"),
         };
 
-        request_url.set_path(&path);
+        request_url.set_path(path);
         request_url
     }
 }
