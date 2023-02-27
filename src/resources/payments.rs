@@ -65,7 +65,7 @@ impl Payment {
     pub async fn void_authorized(
         client: &Client,
         authorization_id: String,
-    ) -> Result<(), PayPalError> {
+    ) -> Result<VoidAuthorizedPaymentResponse, PayPalError> {
         client
             .post(&VoidAuthorizedPayment::new(authorization_id))
             .await
@@ -372,16 +372,16 @@ pub struct ReauthorizeAuthorizedPaymentResponse {
 /// available, reauthorize a payment after its initial three-day honor period expires.
 /// Within the 29-day authorization period, you can issue multiple re-authorizations after the honor
 /// period expires.
-//
-// If 30 days have transpired since the date of the original authorization, you must create an
-// authorized payment instead of reauthorizing the original authorized payment.
-//
-// A reauthorized payment itself has a new honor period of three days.
-//
-// You can reauthorize an authorized payment once for up to 115% of the original authorized amount,
-// not to exceed an increase of $75 USD.
-//
-// Supports only the amount request parameter.
+///
+/// If 30 days have transpired since the date of the original authorization, you must create an
+/// authorized payment instead of reauthorizing the original authorized payment.
+///
+/// A reauthorized payment itself has a new honor period of three days.
+///
+/// You can reauthorize an authorized payment once for up to 115% of the original authorized amount,
+/// not to exceed an increase of $75 USD.
+///
+/// Supports only the amount request parameter.
 #[derive(Debug)]
 struct ReauthorizeAuthorizedPayment {
     authorization_id: String,
@@ -430,10 +430,13 @@ impl VoidAuthorizedPayment {
     }
 }
 
+#[derive(Debug, Deserialize)]
+pub struct VoidAuthorizedPaymentResponse {}
+
 impl Endpoint for VoidAuthorizedPayment {
     type QueryParams = ();
     type RequestBody = ();
-    type ResponseBody = ();
+    type ResponseBody = VoidAuthorizedPaymentResponse;
 
     fn path(&self) -> Cow<str> {
         Cow::Owned(format!(
