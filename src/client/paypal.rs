@@ -171,10 +171,10 @@ impl Client {
         endpoint: &T,
         mut request: RequestBuilder,
     ) -> Result<T::ResponseBody, PayPalError> {
-        if let AuthStrategy::TokenRefresh = endpoint.auth_strategy() {
-            if self.auth_data.read().await.about_to_expire() {
-                self.authenticate().await?;
-            }
+        if endpoint.auth_strategy() == AuthStrategy::TokenRefresh
+            && self.auth_data.read().await.about_to_expire()
+        {
+            self.authenticate().await?;
         }
 
         request = request.header(
@@ -182,27 +182,21 @@ impl Client {
             format!("Bearer {}", self.auth_data.read().await.access_token),
         );
 
-        let response = request.send().await.map_err(PayPalError::from)?;
+        let response = request.send().await?;
 
         if !response.status().is_success() {
-            return Err(PayPalError::from(
-                response
-                    .json::<ValidationError>()
-                    .await
-                    .map_err(PayPalError::from)?,
-            ));
+            return Err(PayPalError::from(response.json::<ValidationError>().await?));
         }
 
-        serde_json::from_str::<T::ResponseBody>(&response.text().await.map_err(PayPalError::from)?)
-            .or_else(|error| {
-                // Endpoints that return an empty response body can safely be deserialized intonto
-                // an empty struct.
-                if error.is_eof() {
-                    Ok(serde_json::from_str::<T::ResponseBody>("{}")?)
-                } else {
-                    Err(PayPalError::from(error))
-                }
-            })
+        serde_json::from_str::<T::ResponseBody>(&response.text().await?).or_else(|error| {
+            // Endpoints that return an empty response body can safely be deserialized into
+            // an empty struct.
+            if error.is_eof() {
+                Ok(serde_json::from_str::<T::ResponseBody>("{}")?)
+            } else {
+                Err(error.into())
+            }
+        })
     }
 
     pub async fn authenticate(&self) -> Result<(), PayPalError> {
@@ -233,17 +227,11 @@ impl Client {
             ))
             .build();
 
-        let retry_request = retry_client.execute(request.build()?).await;
-        match retry_request {
-            Ok(res) => {
-                let parsed_response = serde_json::from_str::<AuthResponse>(&res.text().await?)?;
+        let retry_request = retry_client.execute(request.build()?).await?;
+        let parsed_response = serde_json::from_str::<AuthResponse>(&retry_request.text().await?)?;
 
-                self.auth_data.write().await.update(parsed_response);
-                Ok(())
-            }
-
-            Err(err) => Err(PayPalError::from(err)),
-        }
+        self.auth_data.write().await.update(parsed_response);
+        Ok(())
     }
 }
 

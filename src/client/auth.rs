@@ -84,7 +84,7 @@ impl Endpoint for Authenticate {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 /// Whether to check the validity of the access token and refresh it if necessary or not.
 pub enum AuthStrategy {
     /// Always check the validity of the access token and refresh it if necessary.
