@@ -1,6 +1,6 @@
 [package]
 name = "paypal-rust"
-version = "0.0.6-alpha"
+version = "0.0.7-alpha"
 description = "Rust bindings for the PayPal REST API"
 rust-version = "1.64.0"
 authors = ["Velican Akcakaya <v.akcakaya@hanntech.de>"]

@@ -247,36 +247,36 @@ pub struct RefundCapturedPaymentDto {
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize)]
 pub struct RefundCapturedPaymentResponse {
-    /// The amount that the payee refunded to the payer.
-    pub amount: Money,
-
-    /// The date and time when the transaction occurred, in Internet date and time format.
-    pub create_time: String,
-
     /// The PayPal-generated ID for the refund.
     pub id: String,
-
-    /// The API caller-provided external invoice number for this order.
-    ///  Appears in both the payer's transaction history and the emails that the payer receives.
-    pub invoice_id: String,
-
-    /// An array of related HATEOAS links.
-    pub links: Vec<LinkDescription>,
-
-    /// The reason for the refund. Appears in both the payer's transaction history and the emails that the payer receives.
-    pub note_to_payer: String,
-
-    /// The breakdown of the refund.
-    pub seller_payable_breakdown: SellerPayableBreakdown,
 
     /// The status of the refund.
     pub status: RefundStatus,
 
+    /// An array of related HATEOAS links.
+    pub links: Option<Vec<LinkDescription>>,
+
+    /// The amount that the payee refunded to the payer.
+    pub amount: Option<Money>,
+
+    /// The date and time when the transaction occurred, in Internet date and time format.
+    pub create_time: Option<String>,
+
+    /// The API caller-provided external invoice number for this order.
+    ///  Appears in both the payer's transaction history and the emails that the payer receives.
+    pub invoice_id: Option<String>,
+
+    /// The reason for the refund. Appears in both the payer's transaction history and the emails that the payer receives.
+    pub note_to_payer: Option<String>,
+
+    /// The breakdown of the refund.
+    pub seller_payable_breakdown: Option<SellerPayableBreakdown>,
+
     /// The details of the refund status.
-    pub status_details: RefundStatusDetails,
+    pub status_details: Option<RefundStatusDetails>,
 
     /// The date and time when the transaction was last updated, in Internet date and time format.
-    pub update_time: String,
+    pub update_time: Option<String>,
 }
 
 /// Refunds a captured payment, by ID. For a full refund, include an empty payload in the JSON
