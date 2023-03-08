@@ -23,7 +23,8 @@
 //!
 //! #[tokio::main]
 //! async fn main() {
-//!     dotenv().ok();
+//!     use paypal_rust::{PaymentSource, PayPalWallet, PayPalWalletExperienceContext};
+//! dotenv().ok();
 //!     let username = std::env::var("CLIENT_ID").expect("CLIENT_ID must be set");
 //!     let password = std::env::var("CLIENT_SECRET").expect("CLIENT_SECRET must be set");
 //!
@@ -46,11 +47,18 @@
 //!                 CurrencyCode::Euro,
 //!                 "10.00".to_string(),
 //!             ))],
-//!             application_context: Some(
-//!                 OrderApplicationContext::new()
-//!                     .return_url("https://example.com/#/return".to_string())
-//!                     .cancel_url("https://example.com/#/cancel".to_string()),
-//!             ),
+//!             payment_source: Some(PaymentSource {
+//!                 paypal: Some(PayPalWallet {
+//!                     experience_context: Some(
+//!                         PayPalWalletExperienceContext::new()
+//!                             .return_url("https://example.com/#/return".to_string())
+//!                             .cancel_url("https://example.com/#/cancel".to_string()),
+//!                     ),
+//!                     ..Default::default()
+//!                 }),
+//!                 ..Default::default()
+//!             }),
+//!             ..Default::default()
 //!         },
 //!     ).await.unwrap();
 //!
@@ -68,11 +76,11 @@
 
 #![forbid(unsafe_code)]
 
-pub mod client;
-pub mod resources;
-
 pub use client::paypal::*;
 pub use resources::*;
+
+pub mod client;
+pub mod resources;
 
 #[cfg(feature = "utils")]
 pub mod utils;

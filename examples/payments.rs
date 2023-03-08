@@ -1,10 +1,12 @@
 use dotenv::dotenv;
+use tokio::time::sleep;
+
 use paypal_rust::client::AppInfo;
 use paypal_rust::{
     AmountWithBreakdown, CaptureAuthorizedPaymentDto, Client, CreateOrderDto, CurrencyCode,
-    Environment, Order, OrderApplicationContext, OrderIntent, Payment, PurchaseUnitRequest,
+    Environment, Order, OrderIntent, PayPalWallet, PayPalWalletExperienceContext, Payment,
+    PaymentSource, PurchaseUnitRequest,
 };
-use tokio::time::sleep;
 
 #[tokio::main]
 async fn main() {
@@ -32,11 +34,18 @@ async fn main() {
                 CurrencyCode::Euro,
                 "10.00".to_string(),
             ))],
-            application_context: Some(
-                OrderApplicationContext::new()
-                    .return_url("https://example.com/#/return".to_string())
-                    .cancel_url("https://example.com/#/cancel".to_string()),
-            ),
+            payment_source: Some(PaymentSource {
+                paypal: Some(PayPalWallet {
+                    experience_context: Some(
+                        PayPalWalletExperienceContext::new()
+                            .return_url("https://example.com/#/return".to_string())
+                            .cancel_url("https://example.com/#/cancel".to_string()),
+                    ),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }),
+            ..Default::default()
         },
     )
     .await

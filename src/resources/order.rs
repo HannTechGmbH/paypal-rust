@@ -1,3 +1,9 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
+
 use crate::client::endpoint::{EmptyResponseBody, Endpoint};
 use crate::client::error::PayPalError;
 use crate::client::paypal::Client;
@@ -6,16 +12,13 @@ use crate::resources::enums::order_status::OrderStatus;
 use crate::resources::enums::processing_instruction::ProcessingInstruction;
 use crate::resources::link_description::LinkDescription;
 use crate::resources::order_application_context::OrderApplicationContext;
+use crate::resources::order_capture_request_payment_source::OrderCaptureRequestPaymentSource;
 use crate::resources::patch::Patch;
 use crate::resources::payer::Payer;
-use crate::resources::payment_source::PaymentSource;
 use crate::resources::payment_source_response::PaymentSourceResponse;
 use crate::resources::purchase_unit::PurchaseUnit;
 use crate::resources::purchase_unit_request::PurchaseUnitRequest;
-use reqwest::Method;
-use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
-use std::borrow::Cow;
+use crate::PaymentSource;
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -99,7 +102,7 @@ impl Order {
     pub async fn capture(
         client: &Client,
         id: &str,
-        payment_source: Option<PaymentSource>,
+        payment_source: Option<OrderCaptureRequestPaymentSource>,
     ) -> Result<CapturePaymentForOrderResponse, PayPalError> {
         client
             .post(&CapturePaymentForOrder {
@@ -111,7 +114,7 @@ impl Order {
 }
 
 #[skip_serializing_none]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct CreateOrderDto {
     /// The intent to either capture payment immediately or authorize a payment for an order after order creation.
     ///
@@ -132,7 +135,10 @@ pub struct CreateOrderDto {
     pub purchase_units: Vec<PurchaseUnitRequest>,
 
     /// Customize the payer experience during the approval process for the payment with PayPal.
+    #[deprecated(note = "Use the `experience_context` object under the `payment_source` instead")]
     pub application_context: Option<OrderApplicationContext>,
+
+    pub payment_source: Option<PaymentSource>,
 }
 
 #[derive(Debug)]
@@ -296,7 +302,7 @@ struct CapturePaymentForOrder {
     order_id: String,
 
     /// The payment source definition
-    payment_source: Option<PaymentSource>,
+    payment_source: Option<OrderCaptureRequestPaymentSource>,
 }
 
 #[skip_serializing_none]
@@ -339,7 +345,7 @@ pub struct CapturePaymentForOrderResponse {
 
 impl Endpoint for CapturePaymentForOrder {
     type QueryParams = ();
-    type RequestBody = Option<PaymentSource>;
+    type RequestBody = Option<OrderCaptureRequestPaymentSource>;
     type ResponseBody = CapturePaymentForOrderResponse;
 
     fn path(&self) -> Cow<str> {
