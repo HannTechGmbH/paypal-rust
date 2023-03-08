@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 /// The intent to either capture payment immediately or authorize a payment for an order after order creation.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum OrderIntent {
     /// The merchant intends to capture payment immediately after the customer makes a payment.
+    #[default]
     #[serde(rename = "CAPTURE")]
     Capture,
     /// The merchant intends to authorize a payment and place funds on hold after the customer makes a payment.
