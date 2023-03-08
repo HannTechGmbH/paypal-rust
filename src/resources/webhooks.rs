@@ -1,11 +1,13 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
+
 use crate::client::endpoint::Endpoint;
 use crate::client::error::PayPalError;
 use crate::client::paypal::Client;
 use crate::resources::enums::verification_status::VerificationStatus;
-use reqwest::Method;
-use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
-use std::borrow::Cow;
 
 pub struct Webhook;
 
@@ -42,7 +44,7 @@ pub struct VerifyWebhookSignatureDto {
 
     /// A webhook event notification.
     /// @Note: In this case, the request body.
-    pub webhook_event: String,
+    pub webhook_event: serde_json::Value,
 
     /// The ID of the webhook as configured in your Developer Portal account.
     pub webhook_id: String,
