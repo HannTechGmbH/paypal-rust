@@ -18,11 +18,11 @@ pub enum LandingPage {
 }
 
 impl LandingPage {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            LandingPage::Login => "LOGIN",
-            LandingPage::Billing => "BILLING",
-            LandingPage::NoPreference => "NO_PREFERENCE",
+            Self::Login => "LOGIN",
+            Self::Billing => "BILLING",
+            Self::NoPreference => "NO_PREFERENCE",
         }
     }
 }

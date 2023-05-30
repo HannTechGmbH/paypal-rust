@@ -15,13 +15,13 @@ pub enum PaymentCardType {
 }
 
 impl PaymentCardType {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            PaymentCardType::Credit => "CREDIT",
-            PaymentCardType::Debit => "DEBIT",
-            PaymentCardType::Prepaid => "PREPAID",
-            PaymentCardType::Store => "STORE",
-            PaymentCardType::Unknown => "UNKNOWN",
+            Self::Credit => "CREDIT",
+            Self::Debit => "DEBIT",
+            Self::Prepaid => "PREPAID",
+            Self::Store => "STORE",
+            Self::Unknown => "UNKNOWN",
         }
     }
 }

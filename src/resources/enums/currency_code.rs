@@ -1,7 +1,8 @@
-use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum CurrencyCode {
     #[serde(rename = "AUD")]
     AustralianDollar,
@@ -15,6 +16,7 @@ pub enum CurrencyCode {
     CzechKoruna,
     #[serde(rename = "DKK")]
     DanishKrone,
+    #[default]
     #[serde(rename = "EUR")]
     Euro,
     #[serde(rename = "HKD")]
@@ -56,40 +58,34 @@ pub enum CurrencyCode {
 }
 
 impl CurrencyCode {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            CurrencyCode::AustralianDollar => "AUD",
-            CurrencyCode::BrazilianReal => "BRL",
-            CurrencyCode::CanadianDollar => "CAD",
-            CurrencyCode::ChineseRenmenbi => "CNY",
-            CurrencyCode::CzechKoruna => "CZK",
-            CurrencyCode::DanishKrone => "DKK",
-            CurrencyCode::Euro => "EUR",
-            CurrencyCode::HongKongDollar => "HKD",
-            CurrencyCode::HungarianForint => "HUF",
-            CurrencyCode::IsraeliNewShekel => "ILS",
-            CurrencyCode::JapaneseYen => "JPY",
-            CurrencyCode::MalaysianRinggit => "MYR",
-            CurrencyCode::MexicanPeso => "MXN",
-            CurrencyCode::NewTaiwanDollar => "TWD",
-            CurrencyCode::NewZealandDollar => "NZD",
-            CurrencyCode::Norwegiankrone => "NOK",
-            CurrencyCode::PhilippinePeso => "PHP",
-            CurrencyCode::PolishZloty => "PLN",
-            CurrencyCode::PoundSterling => "GBP",
-            CurrencyCode::RussianRuble => "RUB",
-            CurrencyCode::SingaporeDollar => "SGD",
-            CurrencyCode::SwedishKrona => "SEK",
-            CurrencyCode::SwissFranc => "CHF",
-            CurrencyCode::ThaiBaht => "THB",
-            CurrencyCode::UnitedStatesDollar => "USD",
+            Self::AustralianDollar => "AUD",
+            Self::BrazilianReal => "BRL",
+            Self::CanadianDollar => "CAD",
+            Self::ChineseRenmenbi => "CNY",
+            Self::CzechKoruna => "CZK",
+            Self::DanishKrone => "DKK",
+            Self::Euro => "EUR",
+            Self::HongKongDollar => "HKD",
+            Self::HungarianForint => "HUF",
+            Self::IsraeliNewShekel => "ILS",
+            Self::JapaneseYen => "JPY",
+            Self::MalaysianRinggit => "MYR",
+            Self::MexicanPeso => "MXN",
+            Self::NewTaiwanDollar => "TWD",
+            Self::NewZealandDollar => "NZD",
+            Self::Norwegiankrone => "NOK",
+            Self::PhilippinePeso => "PHP",
+            Self::PolishZloty => "PLN",
+            Self::PoundSterling => "GBP",
+            Self::RussianRuble => "RUB",
+            Self::SingaporeDollar => "SGD",
+            Self::SwedishKrona => "SEK",
+            Self::SwissFranc => "CHF",
+            Self::ThaiBaht => "THB",
+            Self::UnitedStatesDollar => "USD",
         }
-    }
-}
-
-impl Default for CurrencyCode {
-    fn default() -> Self {
-        CurrencyCode::Euro
     }
 }
 
@@ -109,31 +105,31 @@ impl FromStr for CurrencyCode {
     type Err = ParseCurrencyCodeError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "AUD" => Ok(CurrencyCode::AustralianDollar),
-            "BRL" => Ok(CurrencyCode::BrazilianReal),
-            "CAD" => Ok(CurrencyCode::CanadianDollar),
-            "CNY" => Ok(CurrencyCode::ChineseRenmenbi),
-            "CZK" => Ok(CurrencyCode::CzechKoruna),
-            "DKK" => Ok(CurrencyCode::DanishKrone),
-            "EUR" => Ok(CurrencyCode::Euro),
-            "HKD" => Ok(CurrencyCode::HongKongDollar),
-            "HUF" => Ok(CurrencyCode::HungarianForint),
-            "ILS" => Ok(CurrencyCode::IsraeliNewShekel),
-            "JPY" => Ok(CurrencyCode::JapaneseYen),
-            "MYR" => Ok(CurrencyCode::MalaysianRinggit),
-            "MXN" => Ok(CurrencyCode::MexicanPeso),
-            "TWD" => Ok(CurrencyCode::NewTaiwanDollar),
-            "NZD" => Ok(CurrencyCode::NewZealandDollar),
-            "NOK" => Ok(CurrencyCode::Norwegiankrone),
-            "PHP" => Ok(CurrencyCode::PhilippinePeso),
-            "PLN" => Ok(CurrencyCode::PolishZloty),
-            "GBP" => Ok(CurrencyCode::PoundSterling),
-            "RUB" => Ok(CurrencyCode::RussianRuble),
-            "SGD" => Ok(CurrencyCode::SingaporeDollar),
-            "SEK" => Ok(CurrencyCode::SwedishKrona),
-            "CHF" => Ok(CurrencyCode::SwissFranc),
-            "THB" => Ok(CurrencyCode::ThaiBaht),
-            "USD" => Ok(CurrencyCode::UnitedStatesDollar),
+            "AUD" => Ok(Self::AustralianDollar),
+            "BRL" => Ok(Self::BrazilianReal),
+            "CAD" => Ok(Self::CanadianDollar),
+            "CNY" => Ok(Self::ChineseRenmenbi),
+            "CZK" => Ok(Self::CzechKoruna),
+            "DKK" => Ok(Self::DanishKrone),
+            "EUR" => Ok(Self::Euro),
+            "HKD" => Ok(Self::HongKongDollar),
+            "HUF" => Ok(Self::HungarianForint),
+            "ILS" => Ok(Self::IsraeliNewShekel),
+            "JPY" => Ok(Self::JapaneseYen),
+            "MYR" => Ok(Self::MalaysianRinggit),
+            "MXN" => Ok(Self::MexicanPeso),
+            "TWD" => Ok(Self::NewTaiwanDollar),
+            "NZD" => Ok(Self::NewZealandDollar),
+            "NOK" => Ok(Self::Norwegiankrone),
+            "PHP" => Ok(Self::PhilippinePeso),
+            "PLN" => Ok(Self::PolishZloty),
+            "GBP" => Ok(Self::PoundSterling),
+            "RUB" => Ok(Self::RussianRuble),
+            "SGD" => Ok(Self::SingaporeDollar),
+            "SEK" => Ok(Self::SwedishKrona),
+            "CHF" => Ok(Self::SwissFranc),
+            "THB" => Ok(Self::ThaiBaht),
+            "USD" => Ok(Self::UnitedStatesDollar),
             _ => Err(ParseCurrencyCodeError(())),
         }
     }

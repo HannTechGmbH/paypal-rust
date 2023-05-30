@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 use crate::resources::capture_status_details::CaptureStatusDetails;
 use crate::resources::enums::disembursement_mode::DisbursementMode;
 use crate::resources::link_description::LinkDescription;
@@ -5,7 +7,6 @@ use crate::resources::money::Money;
 use crate::resources::processor_response::ProcessorResponse;
 use crate::resources::seller_protection::SellerProtection;
 use crate::resources::seller_recievable_breakdown::SellerReceivableBreakdown;
-use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Capture {
@@ -46,7 +47,7 @@ pub struct Capture {
     pub seller_protection: SellerProtection,
 
     /// The detailed breakdown of the capture activity. This is not available for transactions that are in pending state.
-    pub seller_receivable_breakdown: SellerReceivableBreakdown,
+    pub seller_receivable_breakdown: Option<SellerReceivableBreakdown>,
 
     /// The date and time when the transaction occurred, in Internet date and time format.
     pub create_time: String,

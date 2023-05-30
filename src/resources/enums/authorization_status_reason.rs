@@ -7,9 +7,9 @@ pub enum AuthorizationStatusReason {
 }
 
 impl AuthorizationStatusReason {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            AuthorizationStatusReason::PendingReview => "PENDING_REVIEW",
+            Self::PendingReview => "PENDING_REVIEW",
         }
     }
 }

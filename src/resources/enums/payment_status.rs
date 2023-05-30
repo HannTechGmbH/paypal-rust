@@ -21,16 +21,16 @@ pub enum PaymentStatus {
 }
 
 impl PaymentStatus {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            PaymentStatus::Created => "CREATED",
-            PaymentStatus::Captured => "CAPTURED",
-            PaymentStatus::Denied => "DENIED",
-            PaymentStatus::Expired => "EXPIRED",
-            PaymentStatus::PartiallyCaptured => "PARTIALLY_CAPTURED",
-            PaymentStatus::PartiallyCreated => "PARTIALLY_CREATED",
-            PaymentStatus::Voided => "VOIDED",
-            PaymentStatus::Pending => "PENDING",
+            Self::Created => "CREATED",
+            Self::Captured => "CAPTURED",
+            Self::Denied => "DENIED",
+            Self::Expired => "EXPIRED",
+            Self::PartiallyCaptured => "PARTIALLY_CAPTURED",
+            Self::PartiallyCreated => "PARTIALLY_CREATED",
+            Self::Voided => "VOIDED",
+            Self::Pending => "PENDING",
         }
     }
 }

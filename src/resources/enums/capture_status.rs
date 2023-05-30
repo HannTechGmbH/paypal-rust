@@ -17,14 +17,14 @@ pub enum CaptureStatus {
 }
 
 impl CaptureStatus {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            CaptureStatus::Completed => "COMPLETED",
-            CaptureStatus::Declined => "DECLINED",
-            CaptureStatus::PartiallyRefunded => "PARTIALLY_REFUNDED",
-            CaptureStatus::Pending => "PENDING",
-            CaptureStatus::Refunded => "REFUNDED",
-            CaptureStatus::Failed => "FAILED",
+            Self::Completed => "COMPLETED",
+            Self::Declined => "DECLINED",
+            Self::PartiallyRefunded => "PARTIALLY_REFUNDED",
+            Self::Pending => "PENDING",
+            Self::Refunded => "REFUNDED",
+            Self::Failed => "FAILED",
         }
     }
 }

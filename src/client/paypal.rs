@@ -1,12 +1,6 @@
 use std::sync::Arc;
 
-use crate::client::request;
-
-use crate::client::app_info::AppInfo;
-use crate::client::auth::{AuthData, AuthResponse, AuthStrategy, Authenticate};
-use crate::client::endpoint::Endpoint;
-use crate::client::error::{PayPalError, ValidationError};
-use crate::client::request::QueryParams;
+use base64::{engine::general_purpose, Engine as _};
 use http_types::Url;
 use reqwest::header::AUTHORIZATION;
 use reqwest::RequestBuilder;
@@ -16,12 +10,20 @@ use reqwest_retry::RetryTransientMiddleware;
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
 
+use crate::client::app_info::AppInfo;
+use crate::client::auth::{AuthData, AuthResponse, AuthStrategy, Authenticate};
+use crate::client::endpoint::Endpoint;
+use crate::client::error::{PayPalError, ValidationError};
+use crate::client::request;
+use crate::client::request::QueryParams;
+
 pub static USER_AGENT: &str = concat!("PayPal/v2 Rust Bindings/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Clone)]
 pub struct Client {
     pub default_headers: request::HttpRequestHeaders,
     pub auth_data: Arc<RwLock<AuthData>>,
+
     user_agent: String,
     client_secret: String,
     username: String,
@@ -32,6 +34,10 @@ pub struct Client {
 
 impl Client {
     /// Initialize a new PayPal client. To authenticate, use the `authenticate` method.
+    ///
+    /// # Errors
+    /// Errors if the environment URL cannot be parsed. This should never happen, if it does,
+    /// please open an issue.
     pub fn new(
         username: String,
         client_secret: String,
@@ -47,7 +53,7 @@ impl Client {
         .as_url()
         .map_err(|_e| PayPalError::LibraryError("Could not parse environment Url".to_string()))?;
 
-        Ok(Client {
+        Ok(Self {
             environment,
             client_secret,
             username,
@@ -74,6 +80,10 @@ impl Client {
     /// # Arguments
     /// * `request_path` - The path to append to the base URL.
     /// * `query` - The query parameters to append to the URL.
+    ///
+    /// # Errors
+    /// Errors if the query parameters cannot be serialized. This should never happen, if it does,
+    /// please open an issue.
     pub fn compose_url_with_query(
         &self,
         request_path: &str,
@@ -90,7 +100,8 @@ impl Client {
         Ok(url)
     }
 
-    pub fn with_app_info(mut self, app_info: AppInfo) -> Self {
+    #[must_use]
+    pub fn with_app_info(mut self, app_info: &AppInfo) -> Self {
         self.user_agent = format!("{} {}", self.user_agent, app_info.to_string());
         self
     }
@@ -102,6 +113,9 @@ impl Client {
     ///
     /// # Returns
     /// The response body serialized into the provided type.
+    ///
+    /// # Errors
+    /// Errors if the request fails or the response body cannot be deserialized.
     pub async fn get<T: Endpoint>(&self, endpoint: &T) -> Result<T::ResponseBody, PayPalError> {
         let mut req = self.http.get(endpoint.request_url(self.environment));
         req = self.set_request_headers(req, &endpoint.headers());
@@ -117,6 +131,9 @@ impl Client {
     ///
     /// # Returns
     /// The response body serialized into the provided type.
+    ///
+    /// # Errors
+    /// Errors if the request fails or the response body cannot be deserialized.
     pub async fn post<T: Endpoint>(&self, endpoint: &T) -> Result<T::ResponseBody, PayPalError> {
         let body = serde_json::to_string(&endpoint.request_body())?;
         let mut req = self.http.post(endpoint.request_url(self.environment));
@@ -134,6 +151,9 @@ impl Client {
     ///
     /// # Returns
     /// The response body serialized into the provided type.
+    ///
+    /// # Errors
+    /// Errors if the request fails or the response body cannot be deserialized.
     pub async fn patch<T: Endpoint>(&self, endpoint: &T) -> Result<(), PayPalError> {
         let body = serde_json::to_string(&endpoint.request_body())?;
         let mut req = self.http.patch(endpoint.request_url(self.environment));
@@ -149,6 +169,9 @@ impl Client {
     /// # Arguments
     /// * `request_builder` - The request builder to set the headers on.
     /// * `headers` - The headers to set.
+    ///
+    /// # Returns
+    /// The request builder with the headers set.
     pub fn set_request_headers(
         &self,
         mut request_builder: RequestBuilder,
@@ -166,6 +189,9 @@ impl Client {
     /// # Arguments
     /// * `endpoint` - The endpoint to call.
     /// * `request` - The request to execute (builder).
+    ///
+    /// # Returns
+    /// The response body serialized into the provided type.
     async fn execute<T: Endpoint>(
         &self,
         endpoint: &T,
@@ -199,6 +225,13 @@ impl Client {
         })
     }
 
+    /// Authenticates the client with PayPal. This gets called automatically when the auth strategy
+    /// is set to `TokenRefresh` and the access token is about to expire.
+    ///
+    /// It's recommended to call this method manually when initializing the client.
+    ///
+    /// # Errors
+    /// Errors if the request fails or the response body cannot be deserialized.
     pub async fn authenticate(&self) -> Result<(), PayPalError> {
         let endpoint = Authenticate::new(get_basic_auth_for_user_service(
             self.username.as_str(),
@@ -208,7 +241,7 @@ impl Client {
         let mut request = self
             .http
             .post(endpoint.request_url(self.environment))
-            .body(serde_urlencoded::to_string(&endpoint.request_body())?);
+            .body(serde_urlencoded::to_string(endpoint.request_body())?);
 
         let mut retries = 0;
         if let Some(retry_count) = &endpoint.request_strategy().get_retry_count() {
@@ -238,7 +271,7 @@ impl Client {
 fn get_basic_auth_for_user_service(username: &str, client_secret: &str) -> String {
     format!(
         "Basic {}",
-        base64::encode(format!("{}:{}", username, client_secret))
+        general_purpose::STANDARD.encode(format!("{username}:{client_secret}"))
     )
 }
 
@@ -249,10 +282,10 @@ pub enum Environment {
 }
 
 impl Environment {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(&self) -> &'static str {
         match self {
-            Environment::Sandbox => "sandbox",
-            Environment::Live => "live",
+            Self::Sandbox => "sandbox",
+            Self::Live => "live",
         }
     }
 }
@@ -271,9 +304,11 @@ impl std::fmt::Display for Environment {
 
 #[cfg(test)]
 mod tests {
-    use super::{Client, Environment, QueryParams};
-    use http_types::Url;
     use std::str::FromStr;
+
+    use http_types::Url;
+
+    use super::{Client, Environment, QueryParams};
 
     #[test]
     fn test_environment() {

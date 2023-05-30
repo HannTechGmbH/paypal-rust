@@ -1,7 +1,8 @@
+use std::borrow::Cow;
+
 use reqwest::Method;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use std::borrow::Cow;
 
 use crate::client::{Client, Endpoint, PayPalError};
 use crate::{
@@ -104,36 +105,40 @@ pub struct CaptureAuthorizedPaymentDto {
 
 impl CaptureAuthorizedPaymentDto {
     pub fn new() -> Self {
-        Self {
-            ..Default::default()
-        }
+        Self::default()
     }
 
+    #[must_use]
     pub fn invoice_id(mut self, invoice_id: String) -> Self {
         self.invoice_id = Some(invoice_id);
         self
     }
 
+    #[must_use]
     pub fn note_to_payer(mut self, note_to_payer: String) -> Self {
         self.note_to_payer = Some(note_to_payer);
         self
     }
 
+    #[must_use]
     pub fn amount(mut self, amount: Money) -> Self {
         self.amount = Some(amount);
         self
     }
 
-    pub fn is_final_capture(mut self, is_final_capture: bool) -> Self {
+    #[must_use]
+    pub const fn is_final_capture(mut self, is_final_capture: bool) -> Self {
         self.is_final_capture = Some(is_final_capture);
         self
     }
 
+    #[must_use]
     pub fn payment_instruction(mut self, payment_instruction: PaymentInstruction) -> Self {
         self.payment_instruction = Some(payment_instruction);
         self
     }
 
+    #[must_use]
     pub fn soft_descriptor(mut self, soft_descriptor: String) -> Self {
         self.soft_descriptor = Some(soft_descriptor);
         self
@@ -220,7 +225,7 @@ impl Endpoint for CaptureAuthorizedPayment {
 }
 
 impl CaptureAuthorizedPayment {
-    fn new(authorization_id: String, dto: CaptureAuthorizedPaymentDto) -> Self {
+    const fn new(authorization_id: String, dto: CaptureAuthorizedPaymentDto) -> Self {
         Self {
             authorization_id,
             dto,
@@ -425,7 +430,7 @@ struct VoidAuthorizedPayment {
 }
 
 impl VoidAuthorizedPayment {
-    pub fn new(authorization_id: String) -> Self {
+    pub const fn new(authorization_id: String) -> Self {
         Self { authorization_id }
     }
 }

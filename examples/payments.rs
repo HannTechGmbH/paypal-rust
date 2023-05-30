@@ -14,7 +14,7 @@ async fn main() {
 
     let client = Client::new(username, password, Environment::Sandbox)
         .unwrap()
-        .with_app_info(AppInfo {
+        .with_app_info(&AppInfo {
             name: "PayPal Rust Test App".to_string(),
             version: "1.0".to_string(),
             website: None,

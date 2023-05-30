@@ -1,10 +1,11 @@
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
+
 use crate::resources::amount_with_breakdown::AmountWithBreakdown;
 use crate::resources::item::Item;
 use crate::resources::payee::Payee;
 use crate::resources::payment_instruction::PaymentInstruction;
 use crate::resources::shipping_detail::ShippingDetail;
-use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -64,10 +65,11 @@ pub struct PurchaseUnitRequest {
 }
 
 impl PurchaseUnitRequest {
-    pub fn new(amount: AmountWithBreakdown) -> PurchaseUnitRequest {
-        PurchaseUnitRequest {
+    #[must_use]
+    pub const fn new(amount: AmountWithBreakdown) -> Self {
+        Self {
             amount,
-            items: vec![],
+            items: Vec::new(),
             reference_ids: None,
             payee: None,
             payment_instruction: None,

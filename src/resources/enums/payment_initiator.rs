@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 /// The person or party who initiated or triggered the payment.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum PaymentInitiator {
     /// Payment is initiated with the active engagement of the customer. e.g. a customer checking out on a merchant website.
+    #[default]
     #[serde(rename = "CUSTOMER")]
     Customer,
     #[serde(rename = "MERCHANT")]
@@ -13,17 +14,11 @@ pub enum PaymentInitiator {
 }
 
 impl PaymentInitiator {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            PaymentInitiator::Customer => "CUSTOMER",
-            PaymentInitiator::Merchant => "MERCHANT",
+            Self::Customer => "CUSTOMER",
+            Self::Merchant => "MERCHANT",
         }
-    }
-}
-
-impl Default for PaymentInitiator {
-    fn default() -> Self {
-        PaymentInitiator::Customer
     }
 }
 

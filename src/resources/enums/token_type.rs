@@ -1,24 +1,19 @@
 use serde::{Deserialize, Serialize};
 
 /// The tokenization method that generated the ID.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum TokenType {
     /// The PayPal billing agreement ID. References an approved recurring payment for goods or services.
+    #[default]
     #[serde(rename = "BILLING_AGREEMENT")]
     BillingAgreement,
 }
 
 impl TokenType {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            TokenType::BillingAgreement => "BILLING_AGREEMENT",
+            Self::BillingAgreement => "BILLING_AGREEMENT",
         }
-    }
-}
-
-impl Default for TokenType {
-    fn default() -> Self {
-        TokenType::BillingAgreement
     }
 }
 

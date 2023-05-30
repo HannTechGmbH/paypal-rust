@@ -4,8 +4,9 @@ impl Order {
     /// Checks if a payment for an Order is already captured.
     pub fn is_already_captured(&self, purchase_unit_index: usize, capture_index: usize) -> bool {
         self.get_capture(purchase_unit_index, capture_index)
-            .map(|capture| capture.status == CaptureStatus::Completed.as_str())
-            .unwrap_or(false)
+            .map_or(false, |capture| {
+                capture.status == CaptureStatus::Completed.as_str()
+            })
     }
 
     fn get_capture(&self, purchase_unit_index: usize, capture_index: usize) -> Option<&Capture> {

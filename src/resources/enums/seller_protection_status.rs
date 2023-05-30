@@ -16,11 +16,11 @@ pub enum SellerProtectionStatus {
 }
 
 impl SellerProtectionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            SellerProtectionStatus::Eligible => "ELIGIBLE",
-            SellerProtectionStatus::PartiallyEligible => "PARTIALLY_ELIGIBLE",
-            SellerProtectionStatus::NotEligible => "NOT_ELIGIBLE",
+            Self::Eligible => "ELIGIBLE",
+            Self::PartiallyEligible => "PARTIALLY_ELIGIBLE",
+            Self::NotEligible => "NOT_ELIGIBLE",
         }
     }
 }

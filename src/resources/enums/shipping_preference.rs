@@ -18,11 +18,11 @@ pub enum ShippingPreference {
 }
 
 impl ShippingPreference {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            ShippingPreference::GetFromFile => "GET_FROM_FILE",
-            ShippingPreference::NoShipping => "NO_SHIPPING",
-            ShippingPreference::SetProvidedAddress => "SET_PROVIDED_ADDRESS",
+            Self::GetFromFile => "GET_FROM_FILE",
+            Self::NoShipping => "NO_SHIPPING",
+            Self::SetProvidedAddress => "SET_PROVIDED_ADDRESS",
         }
     }
 }

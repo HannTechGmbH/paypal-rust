@@ -54,12 +54,12 @@ pub enum PayPalError {
 impl Display for PayPalError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Http(e) => write!(f, "HTTP error: {}", e),
-            Self::Json(e) => write!(f, "Failed to serialize response body: {}", e),
-            Self::Api(e) => write!(f, "API error: {}", e),
-            Self::QueryString(e) => write!(f, "Failed to serialize query string: {}", e),
+            Self::Http(e) => write!(f, "HTTP error: {e}"),
+            Self::Json(e) => write!(f, "Failed to serialize response body: {e}"),
+            Self::Api(e) => write!(f, "API error: {e}"),
+            Self::QueryString(e) => write!(f, "Failed to serialize query string: {e}"),
             Self::MissingAccessToken => write!(f, "Missing access token"),
-            Self::LibraryError(e) => write!(f, "Library error: {}", e),
+            Self::LibraryError(e) => write!(f, "Library error: {e}"),
         }
     }
 }

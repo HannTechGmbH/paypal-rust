@@ -1,13 +1,15 @@
-use crate::client::auth::AuthStrategy;
-use crate::client::paypal::Environment;
-use crate::client::request::{HttpRequestHeaders, RequestStrategy, RequestUrl};
-use reqwest::Url;
-use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::fmt::Debug;
 
-pub trait Endpoint {
+use reqwest::Url;
+use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize};
+
+use crate::client::auth::AuthStrategy;
+use crate::client::paypal::Environment;
+use crate::client::request::{HttpRequestHeaders, RequestStrategy, RequestUrl};
+
+pub trait Endpoint: Send + Sync {
     /// The query parameters the endpoint accepts.
     type QueryParams: Serialize;
     /// The request body the endpoint accepts.

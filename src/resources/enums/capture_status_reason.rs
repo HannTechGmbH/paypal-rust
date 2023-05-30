@@ -44,23 +44,21 @@ pub enum CaptureStatusReason {
 }
 
 impl CaptureStatusReason {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            CaptureStatusReason::BuyerComplaint => "BUYER_COMPLAINT",
-            CaptureStatusReason::Chargeback => "CHARGEBACK",
-            CaptureStatusReason::Echeck => "ECHECK",
-            CaptureStatusReason::InternationalWithdrawal => "INTERNATIONAL_WITHDRAWAL",
-            CaptureStatusReason::Other => "OTHER",
-            CaptureStatusReason::PendingReview => "PENDING_REVIEW",
-            CaptureStatusReason::ReceivingPreferenceMandatesManualAction => {
+            Self::BuyerComplaint => "BUYER_COMPLAINT",
+            Self::Chargeback => "CHARGEBACK",
+            Self::Echeck => "ECHECK",
+            Self::InternationalWithdrawal => "INTERNATIONAL_WITHDRAWAL",
+            Self::Other => "OTHER",
+            Self::PendingReview => "PENDING_REVIEW",
+            Self::ReceivingPreferenceMandatesManualAction => {
                 "RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION"
             }
-            CaptureStatusReason::Refunded => "REFUNDED",
-            CaptureStatusReason::TransactionApprovedAwaitingFunding => {
-                "TRANSACTION_APPROVED_AWAITING_FUNDING"
-            }
-            CaptureStatusReason::Unilateral => "UNILATERAL",
-            CaptureStatusReason::VerificationRequired => "VERIFICATION_REQUIRED",
+            Self::Refunded => "REFUNDED",
+            Self::TransactionApprovedAwaitingFunding => "TRANSACTION_APPROVED_AWAITING_FUNDING",
+            Self::Unilateral => "UNILATERAL",
+            Self::VerificationRequired => "VERIFICATION_REQUIRED",
         }
     }
 }

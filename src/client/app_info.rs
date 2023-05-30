@@ -10,7 +10,7 @@ impl ToString for AppInfo {
         let mut app_info = format!("{} {}", self.name, self.version);
 
         if let Some(website) = &self.website {
-            app_info.push_str(&format!(" ({})", website));
+            app_info.push_str(&format!(" ({website})"));
         }
 
         app_info

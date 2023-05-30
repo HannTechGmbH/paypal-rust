@@ -17,12 +17,10 @@ pub enum ProcessingInstruction {
 }
 
 impl ProcessingInstruction {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            ProcessingInstruction::OrderCompleteOnPaymentApproval => {
-                "ORDER_COMPLETE_ON_PAYMENT_APPROVAL"
-            }
-            ProcessingInstruction::NoInstruction => "NO_INSTRUCTION",
+            Self::OrderCompleteOnPaymentApproval => "ORDER_COMPLETE_ON_PAYMENT_APPROVAL",
+            Self::NoInstruction => "NO_INSTRUCTION",
         }
     }
 }

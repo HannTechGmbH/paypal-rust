@@ -9,10 +9,10 @@ pub enum DisputeCategory {
 }
 
 impl DisputeCategory {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            DisputeCategory::ItemNotReceived => "ITEM_NOT_RECEIVED",
-            DisputeCategory::UnauthorizedTransaction => "UNAUTHORIZED_TRANSACTION",
+            Self::ItemNotReceived => "ITEM_NOT_RECEIVED",
+            Self::UnauthorizedTransaction => "UNAUTHORIZED_TRANSACTION",
         }
     }
 }

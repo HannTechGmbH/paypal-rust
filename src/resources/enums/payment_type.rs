@@ -22,11 +22,11 @@ impl Default for PaymentType {
 }
 
 impl PaymentType {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            PaymentType::OneTime => "ONE_TIME",
-            PaymentType::Recurring => "RECURRING",
-            PaymentType::Unscheduled => "UNSCHEDULED",
+            Self::OneTime => "ONE_TIME",
+            Self::Recurring => "RECURRING",
+            Self::Unscheduled => "UNSCHEDULED",
         }
     }
 }

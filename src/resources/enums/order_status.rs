@@ -1,5 +1,6 @@
-use serde::{Deserialize, Serialize};
 use std::str::FromStr;
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum OrderStatus {
@@ -28,14 +29,14 @@ pub enum OrderStatus {
 }
 
 impl OrderStatus {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            OrderStatus::Created => "CREATED",
-            OrderStatus::Saved => "SAVED",
-            OrderStatus::Approved => "APPROVED",
-            OrderStatus::Voided => "VOIDED",
-            OrderStatus::Completed => "COMPLETED",
-            OrderStatus::PayerActionRequired => "PAYER_ACTION_REQUIRED",
+            Self::Created => "CREATED",
+            Self::Saved => "SAVED",
+            Self::Approved => "APPROVED",
+            Self::Voided => "VOIDED",
+            Self::Completed => "COMPLETED",
+            Self::PayerActionRequired => "PAYER_ACTION_REQUIRED",
         }
     }
 }
@@ -56,12 +57,12 @@ impl FromStr for OrderStatus {
     type Err = OrderStatusError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "CREATED" => Ok(OrderStatus::Created),
-            "SAVED" => Ok(OrderStatus::Saved),
-            "APPROVED" => Ok(OrderStatus::Approved),
-            "VOIDED" => Ok(OrderStatus::Voided),
-            "COMPLETED" => Ok(OrderStatus::Completed),
-            "PAYER_ACTION_REQUIRED" => Ok(OrderStatus::PayerActionRequired),
+            "CREATED" => Ok(Self::Created),
+            "SAVED" => Ok(Self::Saved),
+            "APPROVED" => Ok(Self::Approved),
+            "VOIDED" => Ok(Self::Voided),
+            "COMPLETED" => Ok(Self::Completed),
+            "PAYER_ACTION_REQUIRED" => Ok(Self::PayerActionRequired),
             _ => Err(OrderStatusError(())),
         }
     }

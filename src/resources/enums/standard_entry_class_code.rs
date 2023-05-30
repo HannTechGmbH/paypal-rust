@@ -13,12 +13,12 @@ pub enum StandardEntryClassCode {
 }
 
 impl StandardEntryClassCode {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            StandardEntryClassCode::Tel => "TEL",
-            StandardEntryClassCode::Web => "WEB",
-            StandardEntryClassCode::Ccd => "CCD",
-            StandardEntryClassCode::Ppd => "PPD",
+            Self::Tel => "TEL",
+            Self::Web => "WEB",
+            Self::Ccd => "CCD",
+            Self::Ppd => "PPD",
         }
     }
 }

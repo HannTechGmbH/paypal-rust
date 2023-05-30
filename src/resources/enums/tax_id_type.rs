@@ -16,10 +16,10 @@ impl Default for TaxIdType {
 }
 
 impl TaxIdType {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            TaxIdType::BrCPF => "BR_CPF",
-            TaxIdType::BrCNPJ => "BR_CNPJ",
+            Self::BrCPF => "BR_CPF",
+            Self::BrCNPJ => "BR_CNPJ",
         }
     }
 }

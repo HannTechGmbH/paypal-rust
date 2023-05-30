@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum Op {
     ///  Depending on the target location reference, completes one of these functions:
     ///  1. The target location is an array index. Inserts a new value into the array at the specified index.
     ///  2. The target location is an object parameter that does not already exist. Adds a new parameter to the object.
     ///  3. The target location is an object parameter that does exist. Replaces that parameter's value.
     ///  4. The value parameter defines the value to add. For more information, see 4.1. add.
+    #[default]
     #[serde(rename = "add")]
     Add,
     /// Removes the value at the target location. For the operation to succeed, the target location must exist.
@@ -44,21 +45,15 @@ pub enum Op {
 }
 
 impl Op {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            Op::Add => "add",
-            Op::Remove => "remove",
-            Op::Replace => "replace",
-            Op::Move => "move",
-            Op::Copy => "copy",
-            Op::Test => "test",
+            Self::Add => "add",
+            Self::Remove => "remove",
+            Self::Replace => "replace",
+            Self::Move => "move",
+            Self::Copy => "copy",
+            Self::Test => "test",
         }
-    }
-}
-
-impl Default for Op {
-    fn default() -> Self {
-        Op::Add
     }
 }
 

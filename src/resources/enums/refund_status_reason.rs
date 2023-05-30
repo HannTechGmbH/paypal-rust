@@ -9,9 +9,9 @@ pub enum RefundStatusReason {
 }
 
 impl RefundStatusReason {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            RefundStatusReason::Echeck => "ECHECK",
+            Self::Echeck => "ECHECK",
         }
     }
 }

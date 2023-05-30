@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum Network {
+    #[default]
     #[serde(rename = "VISA")]
     Visa,
     #[serde(rename = "MASTERCARD")]
@@ -37,31 +38,25 @@ pub enum Network {
 }
 
 impl Network {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            Network::Visa => "VISA",
-            Network::Mastercard => "MASTERCARD",
-            Network::Discover => "DISCOVER",
-            Network::Amex => "AMEX",
-            Network::Solo => "SOLO",
-            Network::Jcb => "JCB",
-            Network::Star => "STAR",
-            Network::Delta => "DELTA",
-            Network::Switch => "SWITCH",
-            Network::Maestro => "MAESTRO",
-            Network::CbNationale => "CB_NATIONALE",
-            Network::Configoga => "CONFIGOGA",
-            Network::Confidis => "CONFIDIS",
-            Network::Electron => "ELECTRON",
-            Network::Cetelem => "CETELEM",
-            Network::ChinaUnionPay => "CHINA_UNION_PAY",
+            Self::Visa => "VISA",
+            Self::Mastercard => "MASTERCARD",
+            Self::Discover => "DISCOVER",
+            Self::Amex => "AMEX",
+            Self::Solo => "SOLO",
+            Self::Jcb => "JCB",
+            Self::Star => "STAR",
+            Self::Delta => "DELTA",
+            Self::Switch => "SWITCH",
+            Self::Maestro => "MAESTRO",
+            Self::CbNationale => "CB_NATIONALE",
+            Self::Configoga => "CONFIGOGA",
+            Self::Confidis => "CONFIDIS",
+            Self::Electron => "ELECTRON",
+            Self::Cetelem => "CETELEM",
+            Self::ChinaUnionPay => "CHINA_UNION_PAY",
         }
-    }
-}
-
-impl Default for Network {
-    fn default() -> Self {
-        Network::Visa
     }
 }
 

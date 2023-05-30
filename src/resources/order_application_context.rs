@@ -1,10 +1,11 @@
+use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
+
 use crate::resources::enums::landing_page::LandingPage;
 use crate::resources::enums::shipping_preference::ShippingPreference;
 use crate::resources::enums::user_action::UserAction;
 use crate::resources::payment_method::PaymentMethod;
 use crate::resources::stored_payment_source::StoredPaymentSource;
-use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -52,8 +53,9 @@ pub struct OrderApplicationContext {
 }
 
 impl OrderApplicationContext {
-    pub fn new() -> OrderApplicationContext {
-        OrderApplicationContext {
+    #[must_use]
+    pub const fn new() -> Self {
+        Self {
             brand_name: None,
             locale: None,
             landing_page: None,
@@ -66,22 +68,26 @@ impl OrderApplicationContext {
         }
     }
 
-    pub fn brand_name(mut self, brand_name: String) -> OrderApplicationContext {
+    #[must_use]
+    pub fn brand_name(mut self, brand_name: String) -> Self {
         self.brand_name = Some(brand_name);
         self
     }
 
-    pub fn locale(mut self, locale: String) -> OrderApplicationContext {
+    #[must_use]
+    pub fn locale(mut self, locale: String) -> Self {
         self.locale = Some(locale);
         self
     }
 
-    pub fn landing_page(mut self, landing_page: LandingPage) -> OrderApplicationContext {
+    #[must_use]
+    pub const fn landing_page(mut self, landing_page: LandingPage) -> Self {
         self.landing_page = Some(landing_page);
         self
     }
 
-    pub fn shipping_preference(
+    #[must_use]
+    pub const fn shipping_preference(
         mut self,
         shipping_preference: ShippingPreference,
     ) -> OrderApplicationContext {
@@ -89,26 +95,34 @@ impl OrderApplicationContext {
         self
     }
 
-    pub fn user_action(mut self, user_action: UserAction) -> OrderApplicationContext {
+    #[must_use]
+    pub const fn user_action(mut self, user_action: UserAction) -> OrderApplicationContext {
         self.user_action = Some(user_action);
         self
     }
 
-    pub fn payment_method(mut self, payment_method: PaymentMethod) -> OrderApplicationContext {
+    #[must_use]
+    pub const fn payment_method(
+        mut self,
+        payment_method: PaymentMethod,
+    ) -> OrderApplicationContext {
         self.payment_method = Some(payment_method);
         self
     }
 
+    #[must_use]
     pub fn return_url(mut self, return_url: String) -> OrderApplicationContext {
         self.return_url = Some(return_url);
         self
     }
 
+    #[must_use]
     pub fn cancel_url(mut self, cancel_url: String) -> OrderApplicationContext {
         self.cancel_url = Some(cancel_url);
         self
     }
 
+    #[must_use]
     pub fn stored_payment_source(
         mut self,
         stored_payment_source: StoredPaymentSource,

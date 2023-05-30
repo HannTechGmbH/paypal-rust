@@ -14,10 +14,10 @@ pub enum UserAction {
 }
 
 impl UserAction {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            UserAction::Continue => "CONTINUE",
-            UserAction::PayNow => "PAY_NOW",
+            Self::Continue => "CONTINUE",
+            Self::PayNow => "PAY_NOW",
         }
     }
 }

@@ -1,6 +1,7 @@
-use crate::resources::money::Money;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
+
+use crate::resources::money::Money;
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -30,8 +31,9 @@ pub struct AmountBreakdown {
 }
 
 impl AmountBreakdown {
-    pub fn new() -> Self {
-        AmountBreakdown {
+    #[must_use]
+    pub const fn new() -> Self {
+        Self {
             item_total: None,
             shipping: None,
             handling: None,
@@ -42,36 +44,43 @@ impl AmountBreakdown {
         }
     }
 
+    #[must_use]
     pub fn item_total(mut self, item_total: Money) -> Self {
         self.item_total = Some(item_total);
         self
     }
 
+    #[must_use]
     pub fn shipping(mut self, shipping: Money) -> Self {
         self.shipping = Some(shipping);
         self
     }
 
+    #[must_use]
     pub fn handling(mut self, handling: Money) -> Self {
         self.handling = Some(handling);
         self
     }
 
+    #[must_use]
     pub fn tax_total(mut self, tax_total: Money) -> Self {
         self.tax_total = Some(tax_total);
         self
     }
 
+    #[must_use]
     pub fn insurance(mut self, insurance: Money) -> Self {
         self.insurance = Some(insurance);
         self
     }
 
+    #[must_use]
     pub fn shipping_discount(mut self, shipping_discount: Money) -> Self {
         self.shipping_discount = Some(shipping_discount);
         self
     }
 
+    #[must_use]
     pub fn discount(mut self, discount: Money) -> Self {
         self.discount = Some(discount);
         self

@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
+
 use crate::resources::amount_breakdown::AmountBreakdown;
 use crate::resources::enums::currency_code::CurrencyCode;
-use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AmountWithBreakdown {
@@ -19,14 +20,16 @@ pub struct AmountWithBreakdown {
 }
 
 impl AmountWithBreakdown {
-    pub fn new(currency_code: CurrencyCode, value: String) -> AmountWithBreakdown {
-        AmountWithBreakdown {
+    #[must_use]
+    pub fn new(currency_code: CurrencyCode, value: String) -> Self {
+        Self {
             currency_code: currency_code.as_str().to_string(),
             value,
             breakdown: None,
         }
     }
 
+    #[must_use]
     pub fn breakdown(mut self, breakdown: AmountBreakdown) -> Self {
         self.breakdown = Some(breakdown);
         self

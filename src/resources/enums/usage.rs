@@ -17,11 +17,11 @@ pub enum Usage {
 }
 
 impl Usage {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            Usage::First => "FIRST",
-            Usage::Subsequent => "SUBSEQUENT",
-            Usage::Derived => "Derived",
+            Self::First => "FIRST",
+            Self::Subsequent => "SUBSEQUENT",
+            Self::Derived => "Derived",
         }
     }
 }

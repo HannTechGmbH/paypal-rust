@@ -19,25 +19,23 @@ impl Order {
             .value
             .clone();
 
-        match &string_price.parse::<f32>() {
-            Err(_) => None,
-            Ok(price) => {
-                // Round to the nearest cent.
-                let reauthorization_amount = ((price * 1.15) * 100.0).round() / 100.0;
-                if reauthorization_amount > price + 75.0 {
-                    Some(price + 75.0)
-                } else {
-                    Some(reauthorization_amount)
-                }
+        string_price.parse::<f32>().as_ref().map_or(None, |price| {
+            // Round to the nearest cent.
+            let reauthorization_amount = ((price * 1.15) * 100.0).round() / 100.0;
+            if reauthorization_amount > price + 75.0 {
+                Some(price + 75.0)
+            } else {
+                Some(reauthorization_amount)
             }
-        }
+        })
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::{AmountWithBreakdown, PurchaseUnit};
+
+    use super::*;
 
     #[test]
     fn test_get_maximum_reauthorization_amount() {

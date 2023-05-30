@@ -21,16 +21,16 @@ pub enum HttpMethod {
 }
 
 impl HttpMethod {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            HttpMethod::Get => "GET",
-            HttpMethod::Post => "POST",
-            HttpMethod::Put => "PUT",
-            HttpMethod::Delete => "DELETE",
-            HttpMethod::Head => "HEAD",
-            HttpMethod::Connect => "CONNECT",
-            HttpMethod::Options => "OPTIONS",
-            HttpMethod::Patch => "PATCH",
+            Self::Get => "GET",
+            Self::Post => "POST",
+            Self::Put => "PUT",
+            Self::Delete => "DELETE",
+            Self::Head => "HEAD",
+            Self::Connect => "CONNECT",
+            Self::Options => "OPTIONS",
+            Self::Patch => "PATCH",
         }
     }
 }

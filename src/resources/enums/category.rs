@@ -11,11 +11,11 @@ pub enum Category {
 }
 
 impl Category {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            Category::DigitalGoods => "DIGITAL_GOODS",
-            Category::PhysicalGoods => "PHYSICAL_GOODS",
-            Category::Donation => "DONATION",
+            Self::DigitalGoods => "DIGITAL_GOODS",
+            Self::PhysicalGoods => "PHYSICAL_GOODS",
+            Self::Donation => "DONATION",
         }
     }
 }

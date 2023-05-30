@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum DisbursementMode {
+    #[default]
     #[serde(rename = "INSTANT")]
     Instant,
     #[serde(rename = "DELAYED")]
@@ -9,17 +10,11 @@ pub enum DisbursementMode {
 }
 
 impl DisbursementMode {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            DisbursementMode::Instant => "INSTANT",
-            DisbursementMode::Delayed => "DELAYED",
+            Self::Instant => "INSTANT",
+            Self::Delayed => "DELAYED",
         }
-    }
-}
-
-impl Default for DisbursementMode {
-    fn default() -> Self {
-        DisbursementMode::Instant
     }
 }
 

@@ -40,22 +40,22 @@ pub enum CvvCode {
 }
 
 impl CvvCode {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            CvvCode::E => "E",
-            CvvCode::I => "I",
-            CvvCode::M => "M",
-            CvvCode::N => "N",
-            CvvCode::P => "P",
-            CvvCode::S => "S",
-            CvvCode::U => "U",
-            CvvCode::X => "X",
-            CvvCode::AllOthers => "All others",
-            CvvCode::Zero => "0",
-            CvvCode::One => "1",
-            CvvCode::Two => "2",
-            CvvCode::Three => "3",
-            CvvCode::Four => "4",
+            Self::E => "E",
+            Self::I => "I",
+            Self::M => "M",
+            Self::N => "N",
+            Self::P => "P",
+            Self::S => "S",
+            Self::U => "U",
+            Self::X => "X",
+            Self::AllOthers => "All others",
+            Self::Zero => "0",
+            Self::One => "1",
+            Self::Two => "2",
+            Self::Three => "3",
+            Self::Four => "4",
         }
     }
 }

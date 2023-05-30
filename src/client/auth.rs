@@ -1,11 +1,13 @@
-use crate::client::endpoint::Endpoint;
-use crate::client::request::{HttpRequestHeaders, RequestStrategy, RetryCount};
+use std::borrow::Cow;
+use std::ops::Sub;
+
 use chrono::{DateTime, Utc};
 use reqwest::Method;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use std::borrow::Cow;
-use std::ops::Sub;
+
+use crate::client::endpoint::Endpoint;
+use crate::client::request::{HttpRequestHeaders, RequestStrategy, RetryCount};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct AuthRequestBody {
@@ -43,7 +45,7 @@ pub struct Authenticate {
 }
 
 impl Authenticate {
-    pub fn new(authorization: String) -> Self {
+    pub const fn new(authorization: String) -> Self {
         Self { authorization }
     }
 }
@@ -84,19 +86,14 @@ impl Endpoint for Authenticate {
     }
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Default, Copy, Clone, Eq, PartialEq)]
 /// Whether to check the validity of the access token and refresh it if necessary or not.
 pub enum AuthStrategy {
     /// Always check the validity of the access token and refresh it if necessary.
+    #[default]
     TokenRefresh,
     /// Never check the validity of the access token and never refresh it.
     NoTokenRefresh,
-}
-
-impl Default for AuthStrategy {
-    fn default() -> Self {
-        Self::TokenRefresh
-    }
 }
 
 #[skip_serializing_none]
@@ -111,14 +108,15 @@ pub struct AuthData {
 
 impl AuthData {
     pub fn about_to_expire(&self) -> bool {
-        self.expiry_time
-            .map(|expiry_time| expiry_time.sub(Utc::now()).num_seconds() < 10)
-            .unwrap_or(true)
+        self.expiry_time.map_or(true, |expiry_time| {
+            expiry_time.sub(Utc::now()).num_seconds() < 10
+        })
     }
 
     pub fn update(&mut self, response: AuthResponse) {
         self.access_token = response.access_token;
         self.refresh_token = response.refresh_token;
-        self.expiry_time = Some(Utc::now() + chrono::Duration::seconds(response.expires_in as i64));
+        self.expiry_time =
+            Some(Utc::now() + chrono::Duration::seconds(i64::from(response.expires_in)));
     }
 }

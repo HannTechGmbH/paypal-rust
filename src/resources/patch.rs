@@ -1,7 +1,8 @@
-use crate::resources::enums::op::Op;
-use crate::resources::money::Money;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
+
+use crate::resources::enums::op::Op;
+use crate::resources::money::Money;
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -27,16 +28,19 @@ impl Patch {
         }
     }
 
+    #[must_use]
     pub fn path(mut self, path: String) -> Self {
         self.path = Some(path);
         self
     }
 
+    #[must_use]
     pub fn value(mut self, value: PatchValue) -> Self {
         self.value = Some(value);
         self
     }
 
+    #[must_use]
     pub fn from(mut self, from: String) -> Self {
         self.from = Some(from);
         self
@@ -54,22 +58,27 @@ pub enum PatchValue {
 }
 
 impl PatchValue {
+    #[must_use]
     pub fn money(self, money: Money) -> Self {
         Self::Money(money)
     }
 
+    #[must_use]
     pub fn string(self, string: String) -> Self {
         Self::String(string)
     }
 
+    #[must_use]
     pub fn bool(self, boolean: bool) -> Self {
         Self::Boolean(boolean)
     }
 
+    #[must_use]
     pub fn vec(self, vec: Vec<PatchValue>) -> Self {
         Self::Vec(vec)
     }
 
+    #[must_use]
     pub fn int(self, int: i32) -> Self {
         Self::Int(int)
     }

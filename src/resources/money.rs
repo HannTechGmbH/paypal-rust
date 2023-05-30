@@ -1,5 +1,6 @@
-use crate::resources::enums::currency_code::CurrencyCode;
 use serde::{Deserialize, Serialize};
+
+use crate::resources::enums::currency_code::CurrencyCode;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Money {
@@ -14,8 +15,9 @@ pub struct Money {
 }
 
 impl Money {
-    pub fn new(currency_code: CurrencyCode, value: String) -> Money {
-        Money {
+    #[must_use]
+    pub const fn new(currency_code: CurrencyCode, value: String) -> Money {
+        Self {
             currency_code,
             value,
         }

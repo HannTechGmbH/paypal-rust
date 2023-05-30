@@ -9,10 +9,10 @@ pub enum PayeePreferred {
 }
 
 impl PayeePreferred {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            PayeePreferred::Unrestricted => "UNRESTRICTED",
-            PayeePreferred::ImmediatePaymentRequired => "IMMEDIATE_PAYMENT_REQUIRED",
+            Self::Unrestricted => "UNRESTRICTED",
+            Self::ImmediatePaymentRequired => "IMMEDIATE_PAYMENT_REQUIRED",
         }
     }
 }

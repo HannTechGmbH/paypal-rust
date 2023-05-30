@@ -1,5 +1,6 @@
-use serde::{Deserialize, Serialize};
 use std::fmt::Formatter;
+
+use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum CardType {
@@ -38,24 +39,24 @@ pub enum CardType {
 }
 
 impl CardType {
-    pub fn as_str(&self) -> &'static str {
+    pub const fn as_str(&self) -> &'static str {
         match self {
-            CardType::Visa => "VISA",
-            CardType::Mastercard => "MASTERCARD",
-            CardType::Discover => "DISCOVER",
-            CardType::Amex => "AMEX",
-            CardType::Solo => "SOLO",
-            CardType::Jcb => "JCB",
-            CardType::Star => "STAR",
-            CardType::Delta => "DELTA",
-            CardType::Switch => "SWITCH",
-            CardType::Maestro => "MAESTRO",
-            CardType::CbNationale => "CB_NATIONALE",
-            CardType::Configoga => "CONFIGOGA",
-            CardType::Confidis => "CONFIDIS",
-            CardType::Electron => "ELECTRON",
-            CardType::Cetelem => "CETELEM",
-            CardType::ChinaUnionPay => "CHINA_UNION_PAY",
+            Self::Visa => "VISA",
+            Self::Mastercard => "MASTERCARD",
+            Self::Discover => "DISCOVER",
+            Self::Amex => "AMEX",
+            Self::Solo => "SOLO",
+            Self::Jcb => "JCB",
+            Self::Star => "STAR",
+            Self::Delta => "DELTA",
+            Self::Switch => "SWITCH",
+            Self::Maestro => "MAESTRO",
+            Self::CbNationale => "CB_NATIONALE",
+            Self::Configoga => "CONFIGOGA",
+            Self::Confidis => "CONFIDIS",
+            Self::Electron => "ELECTRON",
+            Self::Cetelem => "CETELEM",
+            Self::ChinaUnionPay => "CHINA_UNION_PAY",
         }
     }
 }

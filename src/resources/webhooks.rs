@@ -62,7 +62,7 @@ struct VerifyWebhookSignature {
 }
 
 impl VerifyWebhookSignature {
-    pub fn new(body: VerifyWebhookSignatureDto) -> Self {
+    pub const fn new(body: VerifyWebhookSignatureDto) -> Self {
         Self { body }
     }
 }

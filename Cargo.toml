@@ -1,6 +1,6 @@
 [package]
 name = "paypal-rust"
-version = "0.0.8-alpha"
+version = "0.0.9-alpha"
 description = "Rust bindings for the PayPal REST API"
 rust-version = "1.64.0"
 authors = ["Velican Akcakaya <v.akcakaya@hanntech.de>"]
@@ -22,13 +22,13 @@ utils = []
 reqwest = { version = "0.11", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = ["preserve_order"] }
-serde_qs = "0.10.0"
+serde_qs = "0.12.0"
 serde_urlencoded = "0.7.1"
-serde_with = "2.0.1"
-base64 = "0.13.0"
+serde_with = "3.0.0"
+base64 = "0.21.0"
 http-types = "2.12.0"
-reqwest-middleware = "0.1.6"
-reqwest-retry = "0.1.5"
+reqwest-middleware = "0.2.2"
+reqwest-retry = "0.2.2"
 chrono = { version = "0.4", features = ["serde"] }
 thiserror = "1.0"
 tokio = { version = "1", features = ["full"] }

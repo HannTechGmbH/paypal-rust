@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub enum ShippingType {
+    #[default]
     #[serde(rename = "SHIPPING")]
     Shipping,
     #[serde(rename = "PICKUP_IN_PERSON")]
@@ -9,17 +10,11 @@ pub enum ShippingType {
 }
 
 impl ShippingType {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            ShippingType::Shipping => "SHIPPING",
-            ShippingType::PickupInPerson => "PICKUP_IN_PERSON",
+            Self::Shipping => "SHIPPING",
+            Self::PickupInPerson => "PICKUP_IN_PERSON",
         }
-    }
-}
-
-impl Default for ShippingType {
-    fn default() -> Self {
-        ShippingType::Shipping
     }
 }
 

@@ -15,13 +15,13 @@ pub enum PhoneType {
 }
 
 impl PhoneType {
-    pub fn as_str(self) -> &'static str {
+    pub const fn as_str(self) -> &'static str {
         match self {
-            PhoneType::Fax => "FAX",
-            PhoneType::Home => "HOME",
-            PhoneType::Mobile => "MOBILE",
-            PhoneType::Other => "OTHER",
-            PhoneType::Pager => "PAGER",
+            Self::Fax => "FAX",
+            Self::Home => "HOME",
+            Self::Mobile => "MOBILE",
+            Self::Other => "OTHER",
+            Self::Pager => "PAGER",
         }
     }
 }

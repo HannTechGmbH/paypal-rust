@@ -1,7 +1,8 @@
-use crate::resources::enums::category::Category;
-use crate::resources::money::Money;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
+
+use crate::resources::enums::category::Category;
+use crate::resources::money::Money;
 
 #[skip_serializing_none]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -31,8 +32,8 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn new(name: String, unit_amount: Money, quantity: String) -> Item {
-        Item {
+    pub const fn new(name: String, unit_amount: Money, quantity: String) -> Item {
+        Self {
             name,
             unit_amount,
             quantity,

@@ -1,9 +1,11 @@
-use crate::client::paypal::USER_AGENT;
+use std::ops::AddAssign;
+
 use http_types::url::ParseError;
 use http_types::Url;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
-use std::ops::AddAssign;
+
+use crate::client::paypal::USER_AGENT;
 
 /// For most REST GET calls, you can include one or more query parameters on the request URI to filter, limit the size of,
 /// and sort the data in an API response. For filter parameters, see the individual GET calls.
@@ -51,55 +53,66 @@ pub struct QueryParams {
 }
 
 impl QueryParams {
+    #[must_use]
     pub fn new() -> Self {
-        Default::default()
+        Self::default()
     }
 
-    pub fn count(mut self, count: i32) -> Self {
+    #[must_use]
+    pub const fn count(mut self, count: i32) -> Self {
         self.count = Some(count);
         self
     }
 
-    pub fn end_time(mut self, end_time: i32) -> Self {
+    #[must_use]
+    pub const fn end_time(mut self, end_time: i32) -> Self {
         self.end_time = Some(end_time);
         self
     }
 
-    pub fn page(mut self, page: i32) -> Self {
+    #[must_use]
+    pub const fn page(mut self, page: i32) -> Self {
         self.page = Some(page);
         self
     }
 
-    pub fn page_size(mut self, page_size: i32) -> Self {
+    #[must_use]
+    pub const fn page_size(mut self, page_size: i32) -> Self {
         self.page_size = Some(page_size);
         self
     }
 
-    pub fn total_count_required(mut self, total_count_required: bool) -> Self {
+    #[must_use]
+    pub const fn total_count_required(mut self, total_count_required: bool) -> Self {
         self.total_count_required = Some(total_count_required);
         self
     }
 
+    #[must_use]
     pub fn sort_by(mut self, sort_by: String) -> Self {
         self.sort_by = Some(sort_by);
         self
     }
 
+    #[must_use]
     pub fn sort_order(mut self, sort_order: String) -> Self {
         self.sort_order = Some(sort_order);
         self
     }
 
+    #[must_use]
     pub fn start_id(mut self, start_id: String) -> Self {
         self.start_id = Some(start_id);
         self
     }
 
-    pub fn start_index(mut self, start_index: i32) -> Self {
+    #[must_use]
+    pub const fn start_index(mut self, start_index: i32) -> Self {
         self.start_index = Some(start_index);
         self
     }
 
+    #[must_use]
     pub fn start_time(mut self, start_time: String) -> Self {
         self.start_time = Some(start_time);
         self
@@ -276,7 +289,7 @@ pub struct Request {
 }
 
 impl Request {
-    pub fn new(
+    pub const fn new(
         url: Url,
         headers: HttpRequestHeaders,
         query: Option<QueryParams>,
@@ -304,8 +317,9 @@ impl Default for Request {
     }
 }
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Copy, Clone, Default, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum RequestUrl {
+    #[default]
     Sandbox,
     Live,
 }
@@ -316,8 +330,8 @@ impl RequestUrl {
         let live_url = Url::parse("https://api-m.paypal.com")?;
 
         Ok(match self {
-            RequestUrl::Sandbox => sandbox_url,
-            RequestUrl::Live => live_url,
+            Self::Sandbox => sandbox_url,
+            Self::Live => live_url,
         })
     }
 }
@@ -325,12 +339,6 @@ impl RequestUrl {
 impl std::fmt::Display for RequestUrl {
     fn fmt(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_url().unwrap().as_str().fmt(formatter)
-    }
-}
-
-impl Default for RequestUrl {
-    fn default() -> Self {
-        RequestUrl::Sandbox
     }
 }
 
@@ -364,32 +372,24 @@ impl AddAssign for RetryCount {
 }
 
 /// The strategy to use for executing a request. Defaults to `RetryStrategy::Once`.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub enum RequestStrategy {
     /// Fire the request once and return the response.
+    #[default]
     Once,
     /// Fire the request once and return the response. If the response is an error, retry the request
     Retry(RetryCount),
 }
 
 impl RequestStrategy {
-    pub fn is_retry(&self) -> bool {
-        match self {
-            RequestStrategy::Once => false,
-            RequestStrategy::Retry(_) => true,
-        }
+    pub const fn is_retry(&self) -> bool {
+        matches!(self, Self::Retry(_))
     }
 
-    pub fn get_retry_count(&self) -> Option<&RetryCount> {
+    pub const fn get_retry_count(&self) -> Option<&RetryCount> {
         match self {
-            RequestStrategy::Once => None,
-            RequestStrategy::Retry(count) => Some(count),
+            Self::Once => None,
+            Self::Retry(count) => Some(count),
         }
-    }
-}
-
-impl Default for RequestStrategy {
-    fn default() -> Self {
-        RequestStrategy::Once
     }
 }
